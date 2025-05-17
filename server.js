@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
 const app = express();
 
 // Use PORT from environment variable (provided by Render) or default to 10000
@@ -9,12 +10,13 @@ const port = process.env.PORT || 10000;
 
 // Enable CORS to allow the website to fetch data
 app.use(cors());
+app.use(express.json()); // Parse JSON bodies for POST requests
 
-// API key for authentication
+// API key from environment variable
 const API_KEY = process.env.API_KEY || 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
 
 // In-memory message store (replace with a database for production)
-const messages = [
+let messages = [
   {
     sender: 'User1',
     content: "print('Hello, World!')",
@@ -24,20 +26,20 @@ const messages = [
   },
   {
     sender: 'User2',
-    content: 'Hi, how\'s it going?',
+    content: "Hi, how's it going?",
     type: 'text',
     timestamp: '2025-05-17T11:01:00Z'
   },
   {
     sender: 'User3',
-    content: 'function greet() { return \"Hello!\"; }',
+    content: 'function greet() { return "Hello!"; }',
     type: 'code',
     language: 'javascript',
     timestamp: '2025-05-17T11:02:00Z'
   },
   {
     sender: 'User3',
-    content: 'function greet() { return \"Hello!\"; }',
+    content: 'function greet() { return "Hello!"; }',
     type: 'code',
     language: 'javascript',
     timestamp: '2025-05-17T11:03:00Z'
@@ -59,6 +61,26 @@ app.get('/messages', authenticateAPIKey, (req, res) => {
   res.json(messages);
 });
 
+// POST endpoint to add a new message (requires API key)
+app.post('/messages', authenticateAPIKey, (req, res) => {
+  const { message, timestamp } = req.body;
+  if (!message) {
+    return res.status(400).json({ error: 'Message content is required' });
+  }
+
+  const newMessage = {
+    sender: 'PythonScript', // Hardcoded for now; could be dynamic
+    content: message,
+    type: message.includes('\n') || message.includes('{') || message.includes('(') ? 'code' : 'text', // Basic heuristic
+    language: message.includes('def ') || message.includes('print(') ? 'python' : 'text', // Basic detection
+    timestamp: timestamp || new Date().toISOString()
+  };
+
+  messages.push(newMessage);
+  console.log('Added new message:', newMessage);
+  res.status(201).json(newMessage);
+});
+
 // Serve static files from the public directory
 const publicPath = path.join(__dirname, 'public');
 console.log('Public directory path:', publicPath);
@@ -69,7 +91,7 @@ if (fs.existsSync(publicPath)) {
 }
 app.use(express.static(publicPath));
 
-// Add a catch-all route to serve index.html for any unknown paths
+// Catch-all route to serve index.html for any unknown paths
 app.get('*', (req, res) => {
   const filePath = path.join(__dirname, 'public', 'index.html');
   console.log('Attempting to serve:', filePath);
