@@ -232,25 +232,6 @@
             </div>
             
             <div>
-              <label for="message-type" class="block text-sm font-medium text-gray-700 mb-1">Message Type</label>
-              <select id="message-type" name="type" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="text" selected>Text Message</option>
-                <option value="code">Code Snippet</option>
-              </select>
-            </div>
-            
-            <div id="language-container" class="hidden">
-              <label for="code-language" class="block text-sm font-medium text-gray-700 mb-1">Programming Language</label>
-              <select id="code-language" name="language" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="javascript">JavaScript</option>
-                <option value="python">Python</option>
-                <option value="html">HTML</option>
-                <option value="css">CSS</option>
-                <option value="text">Plain Text</option>
-              </select>
-            </div>
-            
-            <div>
               <label for="message-content" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
               <textarea id="message-content" name="content" rows="4" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Type your message here..." required></textarea>
             </div>
@@ -320,8 +301,6 @@
     const refreshStatus = document.getElementById('refresh-status');
     const autoRefreshIntervalSelect = document.getElementById('auto-refresh-interval');
     const filterTypeSelect = document.getElementById('filter-type');
-    const messageTypeSelect = document.getElementById('message-type');
-    const languageContainer = document.getElementById('language-container');
     const messageCountElement = document.getElementById('message-count');
     const sendMessageForm = document.getElementById('send-message-form');
     const notification = document.getElementById('notification');
@@ -536,16 +515,16 @@
       event.preventDefault();
       
       const formData = new FormData(sendMessageForm);
-      const messageData = {
-        sender: formData.get('sender'),
-        type: formData.get('type'),
-        content: formData.get('content'),
-        timestamp: new Date().toISOString()
-      };
+      const content = formData.get('content');
+      const sender = formData.get('sender');
       
-      if (messageData.type === 'code') {
-        messageData.language = formData.get('language');
-      }
+      // Format the request according to server.js expectations
+      // Note: The server decides message type and language based on content heuristics
+      const messageData = {
+        message: content,
+        timestamp: new Date().toISOString(),
+        sender: sender // Although server currently uses hardcoded 'PythonScript' sender
+      };
       
       try {
         const response = await fetch(API_URL, {
@@ -617,14 +596,7 @@
         displayMessages(filteredMessages);
       });
       
-      // Toggle language selector based on message type
-      messageTypeSelect.addEventListener('change', () => {
-        if (messageTypeSelect.value === 'code') {
-          languageContainer.classList.remove('hidden');
-        } else {
-          languageContainer.classList.add('hidden');
-        }
-      });
+      // Toggle language selector removed since server determines type/language
       
       // Submit message form
       sendMessageForm.addEventListener('submit', sendMessage);
@@ -633,71 +605,9 @@
       closeNotification.addEventListener('click', hideNotification);
     });
 
-    // For demo purposes only - simulate API responses
-    // In a real application, this would be handled by the server
-    window.fetch = function(url, options) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          if (url.endsWith('/messages')) {
-            if (options && options.method === 'POST') {
-              // Handle POST request (sending message)
-              const newMessage = JSON.parse(options.body);
-              
-              // In a real app, the server would save this message
-              // Here we're just simulating a successful response
-              resolve({
-                ok: true,
-                json: () => Promise.resolve({ success: true })
-              });
-            } else {
-              // Handle GET request (fetching messages)
-              resolve({
-                ok: true,
-                json: () => Promise.resolve([
-                  {
-                    sender: "Sarah Chen",
-                    type: "text",
-                    content: "Hey team! Just wanted to check if everyone is prepared for tomorrow's presentation. Let me know if you need any help with the slides.",
-                    timestamp: new Date(Date.now() - 3600000).toISOString()
-                  },
-                  {
-                    sender: "John Davis",
-                    type: "code",
-                    language: "javascript",
-                    content: "// Function to calculate the fibonacci sequence\nfunction fibonacci(n) {\n  if (n <= 1) return n;\n  return fibonacci(n-1) + fibonacci(n-2);\n}\n\n// Test the function\nconsole.log(fibonacci(10));",
-                    timestamp: new Date(Date.now() - 7200000).toISOString()
-                  },
-                  {
-                    sender: "Maria Rodriguez",
-                    type: "text",
-                    content: "I found a bug in the login process. Users are getting redirected to the wrong page after authentication. Can someone look into this issue?",
-                    timestamp: new Date(Date.now() - 10800000).toISOString()
-                  },
-                  {
-                    sender: "Alex Kim",
-                    type: "code",
-                    language: "python",
-                    content: "def process_data(data):\n    results = []\n    for item in data:\n        if item > 0:\n            results.append(item * 2)\n        else:\n            results.append(0)\n    return results\n\ntest_data = [-1, 0, 3, 5, -2, 7]\nprint(process_data(test_data))",
-                    timestamp: new Date(Date.now() - 14400000).toISOString()
-                  },
-                  {
-                    sender: "Emma Wilson",
-                    type: "text",
-                    content: "The client requested changes to the homepage layout. They want the navigation menu to be more visible on mobile devices. I've attached the mockups they sent over.",
-                    timestamp: new Date(Date.now() - 18000000).toISOString()
-                  }
-                ])
-              });
-            }
-          } else {
-            resolve({
-              ok: false,
-              json: () => Promise.resolve({ error: "Invalid endpoint" })
-            });
-          }
-        }, 500); // Simulate network delay
-      });
-    };
+    // For demo purposes only - remove the mock API implementation
+    // This will ensure we're using the actual server API and not the mocked responses
+    // window.fetch = function(url, options) {...}
   </script>
 </body>
 </html>
