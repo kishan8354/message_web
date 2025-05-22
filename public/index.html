@@ -2324,39 +2324,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <!-- CodeMirror for code editor -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/theme/dracula.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/javascript/javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/css/css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/display/autorefresh.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/closebrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/matchbrackets.min.js"></script>
   <style>
     /* Custom styles */
-    .CodeMirror {
-      height: auto !important;
-      min-height: 100px;
-      max-height: 300px;
-      font-size: 12px;
-      border-radius: 0.5rem;
+    .message-input {
+      resize: none;
       overflow-y: auto;
-      border: 1px solid #e5e7eb;
+      max-height: 100px;
     }
     
-    /* Mobile responsive CodeMirror */
-    @media (max-width: 640px) {
-      .CodeMirror {
-        font-size: 10px;
-        min-height: 80px;
-        max-height: 200px;
-      }
-    }
-    
-    /* Custom scrollbar */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -2677,6 +2652,10 @@
     }
     
     /* Copy button improvements */
+    .code-container {
+      position: relative;
+    }
+    
     .copy-button {
       position: absolute;
       top: 8px;
@@ -2874,7 +2853,7 @@
       <div id="messages-container" class="flex-1 overflow-y-auto custom-scrollbar p-2 sm:p-4" style="background-image: url('data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;40&quot; height=&quot;40&quot; viewBox=&quot;0 0 40 40&quot;><circle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;1&quot; fill=&quot;%23e5e7eb&quot; opacity=&quot;0.3&quot;/></svg>');">
         <div id="messages-list" class="space-y-2">
           <!-- Messages will be inserted here -->
-          <div class="flex justify-center items-center h-32 text-gray-400">
+          <div id="loading-placeholder" class="flex justify-center items-center h-32 text-gray-400">
             <div class="text-center">
               <div class="loading-spinner mx-auto mb-2"></div>
               <p class="text-sm">Loading messages...</p>
@@ -2923,9 +2902,7 @@
   </div>
 
   <script>
-    // API configuration
-    const API_URL = window.location.origin + '/messages';
-    const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
+    // Global variables
     let autoRefreshInterval = null;
     let POLLING_INTERVAL = 10000;
     let lastRefreshTime = new Date();
@@ -2939,9 +2916,9 @@
     let isRefreshing = false;
     let isSending = false;
 
-    // Try to get user from localStorage (with fallback for mobile users)
+    // Initialize current user
     try {
-      currentUser = localStorage.getItem('currentUser') || '';
+      currentUser = window.localStorage?.getItem('currentUser') || '';
     } catch (e) {
       currentUser = '';
     }
@@ -2949,6 +2926,7 @@
     // DOM elements
     const messagesContainer = document.getElementById('messages-container');
     const messagesList = document.getElementById('messages-list');
+    const loadingPlaceholder = document.getElementById('loading-placeholder');
     const refreshBtn = document.getElementById('refresh-btn');
     const refreshText = document.getElementById('refresh-text');
     const autoRefreshIntervalSelect = document.getElementById('auto-refresh-interval');
@@ -3005,7 +2983,6 @@
         
         img.onload = function() {
           try {
-            // Calculate new dimensions
             let { width, height } = img;
             
             if (width > height) {
@@ -3022,8 +2999,6 @@
             
             canvas.width = width;
             canvas.height = height;
-            
-            // Draw and compress
             ctx.drawImage(img, 0, 0, width, height);
             
             canvas.toBlob((blob) => {
@@ -3045,6 +3020,7 @@
 
     // Auto-resize textarea
     function autoResize(textarea) {
+      if (!textarea) return;
       textarea.style.height = 'auto';
       textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
     }
@@ -3058,21 +3034,19 @@
     }
 
     function toggleSendButton() {
-      if (mobileSendButton){
-        const hasText = mobileMessageInput.value.trim().length > 0;
-        const hasImage = selectedImageMobile !== null;
-        mobileSendButton.disabled = !hasText && !hasImage;
-      }
+      if (!mobileSendButton || !mobileMessageInput) return;
+      const hasText = mobileMessageInput.value.trim().length > 0;
+      const hasImage = selectedImageMobile !== null;
+      mobileSendButton.disabled = !hasText && !hasImage;
     }
 
     // Desktop send button toggle
     function toggleDesktopSendButton() {
-      if (desktopSendBtn && messageContentInput && senderNameInput) {
-        const hasText = messageContentInput.value.trim().length > 0;
-        const hasImage = selectedImage !== null;
-        const hasName = senderNameInput.value.trim().length > 0;
-        desktopSendBtn.disabled = (!hasText && !hasImage) || !hasName;
-      }
+      if (!desktopSendBtn || !messageContentInput || !senderNameInput) return;
+      const hasText = messageContentInput.value.trim().length > 0;
+      const hasImage = selectedImage !== null;
+      const hasName = senderNameInput.value.trim().length > 0;
+      desktopSendBtn.disabled = (!hasText && !hasImage) || !hasName;
     }
 
     // Event listeners for desktop form
@@ -3085,24 +3059,25 @@
 
     // Show notification
     function showNotification(message, type = 'info') {
-      if (notificationMessage) {
-        notificationMessage.textContent = message;
-        notification.classList.add('show');
-        
-        setTimeout(() => {
-          notification.classList.remove('show');
-        }, 3000);
-      }
+      if (!notificationMessage || !notification) return;
+      notificationMessage.textContent = message;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
     }
 
     // Image modal functions
     function openImageModal(imageSrc) {
+      if (!modalImage || !imageModal) return;
       modalImage.src = imageSrc;
       imageModal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
 
     function closeImageModalFunc() {
+      if (!imageModal) return;
       imageModal.classList.remove('active');
       document.body.style.overflow = '';
     }
@@ -3121,520 +3096,515 @@
 
     // Escape key to close modal
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && imageModal.classList.contains('active')) {
+      if (e.key === 'Escape' && imageModal?.classList.contains('active')) {
         closeImageModalFunc();
       }
     });
 
     // Image handling for desktop
-    if (imageInput) {
-      imageInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          try {
-            const compressedFile = await compressImage(file);
-            selectedImage = compressedFile;
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              imagePreview.src = e.target.result;
-              imagePreviewContainer.classList.remove('hidden');
-              toggleDesktopSendButton();
-            };
-            reader.readAsDataURL(compressedFile);
-          } catch (error) {
-            showNotification('Error processing image: ' + error.message, 'error');
-            selectedImage = null;
-          }
-        }
-      });
-    }
+    // Image handling for desktop
+if (imageInput) {
+  imageInput.addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    if (removeImageBtn) {
-      removeImageBtn.addEventListener('click', () => {
-        selectedImage = null;
-        imageInput.value = '';
-        imagePreviewContainer.classList.add('hidden');
+    try {
+      const compressedFile = await compressImage(file);
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        selectedImage = e.target.result;
+        imagePreview.src = e.target.result;
+        imagePreviewContainer.classList.remove('hidden');
         toggleDesktopSendButton();
-      });
+      };
+      reader.readAsDataURL(compressedFile);
+    } catch (error) {
+      showNotification('Error processing image: ' + error.message, 'error');
+      imageInput.value = '';
     }
+  });
+}
 
-    // Image handling for mobile
-    if (mobileImageInput) {
-      mobileImageInput.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          try {
-            const compressedFile = await compressImage(file);
-            selectedImageMobile = compressedFile;
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              mobileImagePreview.src = e.target.result;
-              mobileImagePreviewContainer.classList.remove('hidden');
-              toggleSendButton();
-            };
-            reader.readAsDataURL(compressedFile);
-          } catch (error) {
-            showNotification('Error processing image: ' + error.message, 'error');
-            selectedImageMobile = null;
-          }
-        }
-      });
-    }
-
-    if (mobileRemoveImageBtn) {
-      mobileRemoveImageBtn.addEventListener('click', () => {
-        selectedImageMobile = null;
-        mobileImageInput.value = '';
-        mobileImagePreviewContainer.classList.add('hidden');
-        toggleSendButton();
-      });
-    }
-
-    // Sidebar functionality
-    if (toggleSidebar) {
-      toggleSidebar.addEventListener('click', () => {
-        sidebar.classList.add('open');
-        sidebarOverlay.classList.add('active');
-      });
-    }
-
-    if (closeSidebar) {
-      closeSidebar.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-      });
-    }
-
-    if (sidebarOverlay) {
-      sidebarOverlay.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-      });
-    }
-
-    // Format timestamp
-    function formatTimestamp(timestamp) {
-      const date = new Date(timestamp);
-      const now = new Date();
-      const diffMs = now - date;
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMs / 3600000);
-      const diffDays = Math.floor(diffMs / 86400000);
-
-      if (diffMins < 1) return 'Just now';
-      if (diffMins < 60) return `${diffMins}m ago`;
-      if (diffHours < 24) return `${diffHours}h ago`;
-      if (diffDays < 7) return `${diffDays}d ago`;
-      
-      return date.toLocaleDateString();
-    }
-
-    // Copy to clipboard
-    function copyToClipboard(text) {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => {
-          showNotification('Code copied to clipboard!');
-        }).catch(() => {
-          fallbackCopyTextToClipboard(text);
-        });
-      } else {
-        fallbackCopyTextToClipboard(text);
-      }
-    }
-
-    function fallbackCopyTextToClipboard(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.top = "0";
-      textArea.style.left = "0";
-      textArea.style.position = "fixed";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      
-      try {
-        document.execCommand('copy');
-        showNotification('Code copied to clipboard!');
-      } catch (err) {
-        showNotification('Failed to copy code', 'error');
-      }
-      document.body.removeChild(textArea);
-    }
-
-    // Detect and format code blocks
-    function formatMessageContent(content) {
-      // Detect code blocks (```language...```)
-      const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
-      const inlineCodeRegex = /`([^`]+)`/g;
-      
-      let formattedContent = content;
-      
-      // Replace code blocks
-      formattedContent = formattedContent.replace(codeBlockRegex, (match, language, code) => {
-        const lang = language || 'text';
-        const codeId = 'code-' + Math.random().toString(36).substr(2, 9);
-        return `<div class="code-container relative mt-2 mb-2">
-          <div class="bg-gray-800 text-gray-200 px-3 py-1 text-xs rounded-t-md flex justify-between items-center">
-            <span>${lang}</span>
-          </div>
-          <pre class="bg-gray-900 text-gray-100 p-3 rounded-b-md overflow-x-auto text-sm"><code id="${codeId}" class="language-${lang}">${code.trim()}</code></pre>
-          <button class="copy-button" onclick="copyToClipboard(document.getElementById('${codeId}').textContent)">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            Copy
-          </button>
-        </div>`;
-      });
-      
-      // Replace inline code
-      formattedContent = formattedContent.replace(inlineCodeRegex, '<code class="bg-gray-200 px-1 py-0.5 rounded text-sm font-mono">$1</code>');
-      
-      // Replace line breaks
-      formattedContent = formattedContent.replace(/\n/g, '<br>');
-      
-      return formattedContent;
-    }
-
-    // Create message element
-    function createMessageElement(message) {
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'new-message';
-      messageDiv.dataset.messageId = message.id;
-      messageDiv.dataset.messageType = message.type || 'text';
-      
-      const isCurrentUser = message.sender === currentUser;
-      const bubbleClass = isCurrentUser ? 'message-sent' : 'message-received';
-      
-      let messageClass = 'message-bubble ' + bubbleClass;
-      if (message.type === 'code') {
-        messageClass += ' message-code';
-      } else if (message.type === 'image') {
-        messageClass += ' message-image';
-      }
-      
-      let content = '';
-      
-      if (message.type === 'image' && message.imageUrl) {
-        content = `
-          <div class="${messageClass}">
-            <div class="message-image-container" onclick="openImageModal('${message.imageUrl}')">
-              <img src="${message.imageUrl}" alt="Shared image" class="message-image-preview">
-            </div>
-            ${message.content ? `<div class="message-content">${formatMessageContent(message.content)}</div>` : ''}
-            <div class="message-meta">
-              <span>${message.sender}</span>
-              <span>${formatTimestamp(message.timestamp)}</span>
-            </div>
-          </div>
-        `;
-      } else {
-        content = `
-          <div class="${messageClass}">
-            <div class="message-content">${formatMessageContent(message.content)}</div>
-            <div class="message-meta">
-              <span>${message.sender}</span>
-              <span>${formatTimestamp(message.timestamp)}</span>
-            </div>
-          </div>
-        `;
-      }
-      
-      messageDiv.innerHTML = content;
-      return messageDiv;
-    }
-
-    // Filter messages
-    function filterMessages(messages, filter) {
-      switch (filter) {
-        case 'text':
-          return messages.filter(msg => !msg.type || msg.type === 'text');
-        case 'code':
-          return messages.filter(msg => msg.type === 'code' || (msg.content && msg.content.includes('```')));
-        case 'image':
-          return messages.filter(msg => msg.type === 'image');
-        default:
-          return messages;
-      }
-    }
-
-    // Display messages
-    function displayMessages(messagesToShow = null) {
-      const filteredMessages = messagesToShow || filterMessages(messages, messageFilter);
-      messagesList.innerHTML = '';
-      
-      if (filteredMessages.length === 0) {
-        messagesList.innerHTML = `
-          <div class="flex justify-center items-center h-32 text-gray-400">
-            <div class="text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.477L3 21l2.477-5.094A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
-              </svg>
-              <p class="text-sm">No messages to display</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-      
-      filteredMessages.forEach(message => {
-        const messageElement = createMessageElement(message);
-        messagesList.appendChild(messageElement);
-      });
-      
-      // Highlight code blocks
-      if (window.Prism) {
-        Prism.highlightAll();
-      }
-      
-      // Scroll to bottom
-      setTimeout(() => {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 100);
-    }
-
-    // Load messages from API
-    async function loadMessages() {
-      if (isRefreshing) return;
-      
-      try {
-        isRefreshing = true;
-        if (refreshText) refreshText.textContent = 'Loading...';
-        
-        // Simulate API call (replace with actual API endpoint)
-        const response = await fetch(API_URL, {
-          headers: {
-            'Authorization': `Bearer ${API_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        const newMessages = Array.isArray(data) ? data : (data.messages || []);
-        
-        // Process new messages
-        const newMessageIds = new Set();
-        newMessages.forEach(msg => {
-          if (!knownMessageIds.has(msg.id)) {
-            newMessageIds.add(msg.id);
-            knownMessageIds.add(msg.id);
-          }
-        });
-        
-        messages = newMessages;
-        displayMessages();
-        
-        // Update message count
-        if (messageCountElement) {
-          messageCountElement.textContent = messages.length;
-        }
-        
-        // Show notification for new messages (except on first load)
-        if (!isFirstLoad && newMessageIds.size > 0) {
-          showNotification(`${newMessageIds.size} new message${newMessageIds.size > 1 ? 's' : ''}`);
-        }
-        
-        isFirstLoad = false;
-        lastRefreshTime = new Date();
-        
-      } catch (error) {
-        console.error('Error loading messages:', error);
-        if (isFirstLoad) {
-          messagesList.innerHTML = `
-            <div class="flex justify-center items-center h-32 text-red-400">
-              <div class="text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="text-sm">Error loading messages</p>
-                <button onclick="loadMessages()" class="text-blue-600 hover:text-blue-800 text-sm mt-1">Try again</button>
-              </div>
-            </div>
-          `;
-        } else {
-          showNotification('Error loading messages', 'error');
-        }
-      } finally {
-        isRefreshing = false;
-        if (refreshText) refreshText.textContent = 'Refresh';
-      }
-    }
-
-    // Send message
-    async function sendMessage(formData) {
-      if (isSending) return;
-      
-      try {
-        isSending = true;
-        
-        // Update UI
-        if (desktopSendText) desktopSendText.textContent = 'Sending...';
-        if (desktopSendBtn) desktopSendBtn.disabled = true;
-        if (mobileSendButton) mobileSendButton.disabled = true;
-        
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${API_KEY}`
-          },
-          body: formData
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        // Clear form
-        if (sendMessageForm) sendMessageForm.reset();
-        if (mobileMessageForm) mobileMessageForm.reset();
-        
-        // Clear images
-        selectedImage = null;
-        selectedImageMobile = null;
-        if (imagePreviewContainer) imagePreviewContainer.classList.add('hidden');
-        if (mobileImagePreviewContainer) mobileImagePreviewContainer.classList.add('hidden');
-        
-        // Reset mobile input height
-        if (mobileMessageInput) {
-          mobileMessageInput.style.height = 'auto';
-        }
-        
-        showNotification('Message sent successfully!');
-        
-        // Refresh messages
-        setTimeout(() => {
-          loadMessages();
-        }, 500);
-        
-      } catch (error) {
-        console.error('Error sending message:', error);
-        showNotification('Error sending message', 'error');
-      } finally {
-        isSending = false;
-        if (desktopSendText) desktopSendText.textContent = 'Send Message';
-        toggleDesktopSendButton();
-        toggleSendButton();
-      }
-    }
-
-    // Handle desktop form submission
-    if (sendMessageForm) {
-      sendMessageForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData();
-        formData.append('sender', senderNameInput.value.trim());
-        formData.append('content', messageContentInput.value.trim());
-        
-        if (selectedImage) {
-          formData.append('image', selectedImage);
-        }
-        
-        // Save current user
-        currentUser = senderNameInput.value.trim();
-        try {
-          localStorage.setItem('currentUser', currentUser);
-        } catch (e) {
-          // Handle localStorage not available
-        }
-        
-        await sendMessage(formData);
-      });
-    }
-
-    // Handle mobile form submission
-    if (mobileMessageForm) {
-      mobileMessageForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const content = mobileMessageInput.value.trim();
-        if (!content && !selectedImageMobile) return;
-        
-        const formData = new FormData();
-        formData.append('sender', currentUser || 'Anonymous');
-        formData.append('content', content);
-        
-        if (selectedImageMobile) {
-          formData.append('image', selectedImageMobile);
-        }
-        
-        await sendMessage(formData);
-      });
-    }
-
-    // Event listeners
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', loadMessages);
-    }
-
-    if (autoRefreshIntervalSelect) {
-      autoRefreshIntervalSelect.addEventListener('change', (e) => {
-        POLLING_INTERVAL = parseInt(e.target.value);
-        
-        // Restart auto-refresh with new interval
-        if (autoRefreshInterval) {
-          clearInterval(autoRefreshInterval);
-        }
-        
-        autoRefreshInterval = setInterval(() => {
-          if (!isRefreshing && !isSending) {
-            loadMessages();
-          }
-        }, POLLING_INTERVAL);
-      });
-    }
-
-    if (filterTypeSelect) {
-      filterTypeSelect.addEventListener('change', (e) => {
-        messageFilter = e.target.value;
-        displayMessages();
-      });
-    }
-
-    // Initialize auto-refresh
-    autoRefreshInterval = setInterval(() => {
-      if (!isRefreshing && !isSending) {
-        loadMessages();
-      }
-    }, POLLING_INTERVAL);
-
-    // Initial load
-    loadMessages();
-
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-      }
-    });
-
-    // Handle online/offline status
-    function updateOnlineStatus() {
-      const onlineStatus = document.getElementById('online-status');
-      if (onlineStatus) {
-        if (navigator.onLine) {
-          onlineStatus.textContent = 'Online';
-          onlineStatus.className = 'ml-2 text-xs bg-green-500 px-2 py-1 rounded-full';
-        } else {
-          onlineStatus.textContent = 'Offline';
-          onlineStatus.className = 'ml-2 text-xs bg-red-500 px-2 py-1 rounded-full';
-        }
-      }
-    }
-
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus();
-
-    // Initialize button states
+// Remove image for desktop
+if (removeImageBtn) {
+  removeImageBtn.addEventListener('click', function() {
+    selectedImage = null;
+    imageInput.value = '';
+    imagePreviewContainer.classList.add('hidden');
     toggleDesktopSendButton();
+  });
+}
+
+// Image handling for mobile
+if (mobileImageInput) {
+  mobileImageInput.addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const compressedFile = await compressImage(file);
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        selectedImageMobile = e.target.result;
+        mobileImagePreview.src = e.target.result;
+        mobileImagePreviewContainer.classList.remove('hidden');
+        toggleSendButton();
+      };
+      reader.readAsDataURL(compressedFile);
+    } catch (error) {
+      showNotification('Error processing image: ' + error.message, 'error');
+      mobileImageInput.value = '';
+    }
+  });
+}
+
+// Remove image for mobile
+if (mobileRemoveImageBtn) {
+  mobileRemoveImageBtn.addEventListener('click', function() {
+    selectedImageMobile = null;
+    mobileImageInput.value = '';
+    mobileImagePreviewContainer.classList.add('hidden');
     toggleSendButton();
-  </script>
-</body>
-</html>
+  });
+}
+
+// Sidebar functionality
+if (toggleSidebar) {
+  toggleSidebar.addEventListener('click', function() {
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('active');
+  });
+}
+
+if (closeSidebar) {
+  closeSidebar.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('active');
+  });
+}
+
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('active');
+  });
+}
+
+// Mock data for demonstration
+const mockMessages = [
+  {
+    id: 1,
+    sender: 'Alice',
+    content: 'Hello everyone! How are you doing today?',
+    timestamp: new Date(Date.now() - 300000).toISOString(),
+    type: 'text'
+  },
+  {
+    id: 2,
+    sender: 'Bob',
+    content: 'def calculate_fibonacci(n):\n    if n <= 1:\n        return n\n    return calculate_fibonacci(n-1) + calculate_fibonacci(n-2)\n\nprint(calculate_fibonacci(10))',
+    timestamp: new Date(Date.now() - 240000).toISOString(),
+    type: 'code',
+    language: 'python'
+  },
+  {
+    id: 3,
+    sender: 'Charlie',
+    content: 'Check out this beautiful sunset!',
+    timestamp: new Date(Date.now() - 180000).toISOString(),
+    type: 'image',
+    image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><defs><linearGradient id="sunset" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:%23ff6b6b;stop-opacity:1" /><stop offset="50%" style="stop-color:%23ffa500;stop-opacity:1" /><stop offset="100%" style="stop-color:%23ffeb3b;stop-opacity:1" /></linearGradient></defs><rect width="300" height="200" fill="url(%23sunset)"/><circle cx="150" cy="80" r="40" fill="%23ff4444"/><text x="150" y="160" text-anchor="middle" fill="white" font-family="Arial" font-size="16">Beautiful Sunset</text></svg>'
+  }
+];
+
+// Message rendering functions
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInHours = (now - date) / (1000 * 60 * 60);
+  
+  if (diffInHours < 24) {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } else {
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+}
+
+function detectCodeLanguage(content) {
+  if (content.includes('def ') || content.includes('import ') || content.includes('print(')) return 'python';
+  if (content.includes('function ') || content.includes('const ') || content.includes('console.log')) return 'javascript';
+  if (content.includes('public class') || content.includes('System.out')) return 'java';
+  if (content.includes('#include') || content.includes('std::')) return 'cpp';
+  return 'markup';
+}
+
+function isCodeMessage(content) {
+  const codeIndicators = [
+    /def\s+\w+\(/,
+    /function\s+\w+\(/,
+    /class\s+\w+/,
+    /import\s+\w+/,
+    /console\.log/,
+    /print\(/,
+    /#include/,
+    /public\s+class/
+  ];
+  
+  return codeIndicators.some(pattern => pattern.test(content)) || 
+         content.includes('{') && content.includes('}') &&
+         (content.includes(';') || content.includes('function') || content.includes('class'));
+}
+
+function copyToClipboard(text, button) {
+  navigator.clipboard.writeText(text).then(() => {
+    const originalText = button.innerHTML;
+    button.innerHTML = '<span>✓</span> Copied';
+    button.style.backgroundColor = '#10b981';
+    
+    setTimeout(() => {
+      button.innerHTML = originalText;
+      button.style.backgroundColor = '';
+    }, 2000);
+  }).catch(() => {
+    showNotification('Failed to copy to clipboard', 'error');
+  });
+}
+
+function createMessageElement(message) {
+  const messageDiv = document.createElement('div');
+  const isOwnMessage = message.sender === currentUser;
+  
+  messageDiv.className = `message-bubble new-message ${
+    isOwnMessage ? 'message-sent' : 
+    message.type === 'code' ? 'message-code' :
+    message.type === 'image' ? 'message-image' : 'message-received'
+  }`;
+
+  let contentHtml = '';
+  
+  if (message.type === 'image') {
+    contentHtml = `
+      <div class="message-content">
+        ${message.content ? `<p class="mb-2">${escapeHtml(message.content)}</p>` : ''}
+        <div class="message-image-container" onclick="openImageModal('${message.image}')">
+          <img src="${message.image}" alt="Shared image" class="message-image-preview">
+        </div>
+      </div>
+    `;
+  } else if (message.type === 'code' || isCodeMessage(message.content)) {
+    const language = message.language || detectCodeLanguage(message.content);
+    contentHtml = `
+      <div class="message-content">
+        <div class="code-container">
+          <pre><code class="language-${language}">${escapeHtml(message.content)}</code></pre>
+          <button class="copy-button" onclick="copyToClipboard(\`${escapeHtml(message.content).replace(/`/g, '\\`')}\`, this)">
+            <span>📋</span> Copy
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    contentHtml = `
+      <div class="message-content">
+        <p>${escapeHtml(message.content).replace(/\n/g, '<br>')}</p>
+      </div>
+    `;
+  }
+
+  messageDiv.innerHTML = `
+    ${contentHtml}
+    <div class="message-meta">
+      <span class="message-sender">${escapeHtml(message.sender)}</span>
+      <span class="message-time">${formatTimestamp(message.timestamp)}</span>
+    </div>
+  `;
+
+  return messageDiv;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Filter messages
+function filterMessages(messages, filterType) {
+  switch (filterType) {
+    case 'text':
+      return messages.filter(msg => msg.type === 'text' || (!msg.type && !isCodeMessage(msg.content)));
+    case 'code':
+      return messages.filter(msg => msg.type === 'code' || isCodeMessage(msg.content));
+    case 'image':
+      return messages.filter(msg => msg.type === 'image');
+    default:
+      return messages;
+  }
+}
+
+// Render messages
+function renderMessages(messagesToRender = null) {
+  if (!messagesList) return;
+  
+  const filteredMessages = filterMessages(messagesToRender || messages, messageFilter);
+  
+  if (filteredMessages.length === 0) {
+    messagesList.innerHTML = '<div class="text-center text-gray-500 py-8">No messages to display</div>';
+    return;
+  }
+
+  messagesList.innerHTML = '';
+  
+  filteredMessages.forEach(message => {
+    const messageElement = createMessageElement(message);
+    messagesList.appendChild(messageElement);
+  });
+
+  // Syntax highlighting
+  if (window.Prism) {
+    Prism.highlightAll();
+  }
+
+  // Scroll to bottom
+  setTimeout(() => {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }, 100);
+}
+
+// Load messages (mock implementation)
+async function loadMessages() {
+  if (isRefreshing) return;
+  isRefreshing = true;
+  
+  try {
+    if (refreshBtn && refreshText) {
+      refreshBtn.disabled = true;
+      refreshText.textContent = 'Loading...';
+    }
+
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Use mock data for demonstration
+    messages = [...mockMessages];
+    
+    // Add any new messages that were sent during this session
+    const newMessages = messages.filter(msg => !knownMessageIds.has(msg.id));
+    newMessages.forEach(msg => knownMessageIds.add(msg.id));
+
+    renderMessages();
+    
+    if (messageCountElement) {
+      messageCountElement.textContent = messages.length;
+    }
+
+    if (loadingPlaceholder) {
+      loadingPlaceholder.style.display = 'none';
+    }
+
+    if (isFirstLoad) {
+      showNotification('Messages loaded successfully');
+      isFirstLoad = false;
+    }
+
+    lastRefreshTime = new Date();
+    
+  } catch (error) {
+    console.error('Error loading messages:', error);
+    showNotification('Error loading messages: ' + error.message, 'error');
+  } finally {
+    isRefreshing = false;
+    if (refreshBtn && refreshText) {
+      refreshBtn.disabled = false;
+      refreshText.textContent = 'Refresh';
+    }
+  }
+}
+
+// Send message function
+async function sendMessage(formData) {
+  if (isSending) return;
+  isSending = true;
+
+  try {
+    // Create new message object
+    const newMessage = {
+      id: Date.now(),
+      sender: formData.get('sender') || currentUser || 'Anonymous',
+      content: formData.get('content') || '',
+      timestamp: new Date().toISOString(),
+      type: formData.has('image') ? 'image' : (isCodeMessage(formData.get('content') || '') ? 'code' : 'text')
+    };
+
+    if (formData.has('image')) {
+      newMessage.image = formData.get('image');
+    }
+
+    // Add to messages array
+    messages.push(newMessage);
+    knownMessageIds.add(newMessage.id);
+
+    // Re-render messages
+    renderMessages();
+
+    // Update message count
+    if (messageCountElement) {
+      messageCountElement.textContent = messages.length;
+    }
+
+    // Store current user
+    if (newMessage.sender !== 'Anonymous') {
+      currentUser = newMessage.sender;
+      try {
+        window.localStorage?.setItem('currentUser', currentUser);
+      } catch (e) {
+        // Ignore localStorage errors
+      }
+    }
+
+    showNotification('Message sent successfully');
+
+  } catch (error) {
+    console.error('Error sending message:', error);
+    showNotification('Error sending message: ' + error.message, 'error');
+  } finally {
+    isSending = false;
+  }
+}
+
+// Form submission handlers
+if (sendMessageForm) {
+  sendMessageForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (isSending) return;
+
+    const formData = new FormData();
+    formData.append('sender', senderNameInput?.value || '');
+    formData.append('content', messageContentInput?.value || '');
+    
+    if (selectedImage) {
+      formData.append('image', selectedImage);
+    }
+
+    if (!formData.get('content') && !formData.has('image')) {
+      showNotification('Please enter a message or select an image', 'error');
+      return;
+    }
+
+    // Show loading state
+    if (desktopSendBtn && desktopSendText) {
+      desktopSendBtn.disabled = true;
+      desktopSendText.textContent = 'Sending...';
+    }
+
+    await sendMessage(formData);
+
+    // Reset form
+    if (messageContentInput) messageContentInput.value = '';
+    selectedImage = null;
+    if (imageInput) imageInput.value = '';
+    if (imagePreviewContainer) imagePreviewContainer.classList.add('hidden');
+    
+    // Reset button state
+    if (desktopSendBtn && desktopSendText) {
+      desktopSendBtn.disabled = false;
+      desktopSendText.textContent = 'Send Message';
+    }
+    
+    toggleDesktopSendButton();
+  });
+}
+
+if (mobileMessageForm) {
+  mobileMessageForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (isSending) return;
+
+    const formData = new FormData();
+    formData.append('sender', currentUser || 'Anonymous');
+    formData.append('content', mobileMessageInput?.value || '');
+    
+    if (selectedImageMobile) {
+      formData.append('image', selectedImageMobile);
+    }
+
+    if (!formData.get('content') && !formData.has('image')) {
+      showNotification('Please enter a message or select an image', 'error');
+      return;
+    }
+
+    await sendMessage(formData);
+
+    // Reset form
+    if (mobileMessageInput) {
+      mobileMessageInput.value = '';
+      autoResize(mobileMessageInput);
+    }
+    selectedImageMobile = null;
+    if (mobileImageInput) mobileImageInput.value = '';
+    if (mobileImagePreviewContainer) mobileImagePreviewContainer.classList.add('hidden');
+    
+    toggleSendButton();
+  });
+}
+
+// Event listeners
+if (refreshBtn) {
+  refreshBtn.addEventListener('click', loadMessages);
+}
+
+if (autoRefreshIntervalSelect) {
+  autoRefreshIntervalSelect.addEventListener('change', function() {
+    POLLING_INTERVAL = parseInt(this.value);
+    setupAutoRefresh();
+  });
+}
+
+if (filterTypeSelect) {
+  filterTypeSelect.addEventListener('change', function() {
+    messageFilter = this.value;
+    renderMessages();
+  });
+}
+
+// Auto-refresh setup
+function setupAutoRefresh() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+  }
+  
+  autoRefreshInterval = setInterval(() => {
+    if (!document.hidden && !isRefreshing) {
+      loadMessages();
+    }
+  }, POLLING_INTERVAL);
+}
+
+// Initialize the application
+function init() {
+  loadMessages();
+  setupAutoRefresh();
+  
+  // Set initial button states
+  toggleDesktopSendButton();
+  toggleSendButton();
+}
+
+// Start the application
+document.addEventListener('DOMContentLoaded', init);
+
+// Page visibility handling
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden && Date.now() - lastRefreshTime.getTime() > POLLING_INTERVAL) {
+    loadMessages();
+  }
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+  if (autoRefreshInterval) {
+    clearInterval(autoRefreshInterval);
+  }
+});
