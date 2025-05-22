@@ -611,7 +611,7 @@
   </script>
 </body>
 </html> -->
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -622,7 +622,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <!-- CodeMirror for code editor -->
+  CodeMirror for code editor
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/theme/dracula.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
@@ -756,7 +756,7 @@
   
   <main class="container mx-auto px-3 sm:px-6 py-4 flex-grow">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-      <!-- Sidebar with controls and stats -->
+      Sidebar with controls and stats
       <div class="lg:col-span-1">
         <div class="bg-white p-4 rounded-lg shadow mb-4">
           <h2 class="text-lg font-semibold text-gray-800 mb-4">Controls</h2>
@@ -815,7 +815,7 @@
       </div>
       
       <!-- Messages main content -->
-      <div class="lg:col-span-2">
+      <!-- <div class="lg:col-span-2">
         <div class="bg-white p-4 rounded-lg shadow h-full">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-gray-800">Messages</h2>
@@ -823,24 +823,24 @@
           </div>
           
           <div id="messages-container" class="space-y-4 overflow-y-auto p-1">
-            <!-- Messages will be inserted here -->
-            <div class="flex justify-center items-center h-32 text-gray-400">
+            Messages will be inserted here
+             <div class="flex justify-center items-center h-32 text-gray-400">
               <p>Loading messages...</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </main>
-  
+  </main> -->
+<!--   
   <footer class="bg-gray-900 text-white py-3 sm:py-4 mt-6">
     <div class="container mx-auto px-3 sm:px-6 text-center">
       <p class="text-sm sm:text-base">© 2025 Message Dashboard. All rights reserved.</p>
     </div>
-  </footer>
+  </footer>  -->
 
   <!-- Notification toast -->
-  <div id="notification" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 flex items-center">
+  <!-- <div id="notification" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 flex items-center">
     <span id="notification-message">Notification message</span>
     <button id="close-notification" class="ml-3 text-gray-300 hover:text-white">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -983,8 +983,8 @@
               <span class="text-xs text-gray-500">${message.timestamp ? new Date(message.timestamp).toLocaleString() : new Date().toLocaleString()}</span>
             </div>
           </div>
-        `;
-
+        `; -->
+<!-- 
         if (isCode) {
           // Code message with proper syntax highlighting and copy button
           messageDiv.innerHTML = `
@@ -1093,9 +1093,9 @@
           </div>
         </div>
       `;
-    }
+    } -->
 
-    // Function to update refresh status
+    <!-- // Function to update refresh status
     function updateRefreshStatus() {
       const now = new Date();
       const seconds = Math.round((now - lastRefreshTime) / 1000);
@@ -1245,6 +1245,1069 @@
       
       // Close notification
       closeNotification.addEventListener('click', hideNotification);
+    });
+  </script>
+</body> -->
+<!--  </html> -->
+  <!-- code 3---------------------------------------------------------------------------- -->
+   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <!-- CodeMirror for code editor -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/theme/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/display/autorefresh.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/matchbrackets.min.js"></script>
+  <style>
+    /* Custom styles */
+    .CodeMirror {
+      height: auto !important;
+      min-height: 150px;
+      max-height: 400px;
+      font-size: 13px;
+      border-radius: 0.5rem;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+    }
+    
+    /* Mobile responsive CodeMirror */
+    @media (max-width: 640px) {
+      .CodeMirror {
+        font-size: 11px;
+        min-height: 120px;
+        max-height: 300px;
+      }
+    }
+    
+    /* WhatsApp-like message bubbles */
+    .message-bubble {
+      max-width: 85%;
+      word-wrap: break-word;
+      border-radius: 18px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    
+    .message-sent {
+      background: linear-gradient(135deg, #dcf8c6 0%, #d4f2b8 100%);
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .message-received {
+      background: white;
+      margin-right: auto;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .message-code {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      max-width: 95%;
+    }
+    
+    .message-image {
+      background: transparent;
+      padding: 4px;
+    }
+    
+    /* Message content */
+    .message-content {
+      padding: 8px 12px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .message-meta {
+      font-size: 11px;
+      color: #667781;
+      text-align: right;
+      padding: 2px 8px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* Image handling */
+    .message-image-container {
+      max-width: 280px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    
+    .message-image-container:hover {
+      transform: scale(1.02);
+    }
+    
+    .message-image-preview {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .message-bubble {
+        max-width: 92%;
+      }
+      
+      .message-content {
+        font-size: 14px;
+        padding: 10px 12px;
+      }
+      
+      .message-image-container {
+        max-width: 240px;
+      }
+      
+      .sidebar-desktop {
+        display: none;
+      }
+      
+      .mobile-input {
+        display: flex;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .mobile-input {
+        display: none;
+      }
+    }
+    
+    /* Copy button improvements */
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 8px;
+      background-color: rgba(99, 102, 241, 0.9);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .code-container:hover .copy-button {
+      opacity: 1;
+    }
+    
+    .copy-button:hover {
+      background-color: rgba(79, 70, 229, 1);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    .new-message {
+      animation: fadeInUp 0.3s ease-out;
+    }
+    
+    /* Scrollbar styling */
+    .messages-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .messages-scroll::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    .messages-scroll::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+    
+    .messages-scroll::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+    
+    /* Input area styling */
+    .input-area {
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 12px;
+    }
+    
+    .input-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      max-width: 100%;
+    }
+    
+    .message-input {
+      flex: 1;
+      min-height: 40px;
+      max-height: 120px;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 20px;
+      resize: none;
+      outline: none;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .message-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 1px #10b981;
+    }
+    
+    .send-button {
+      width: 40px;
+      height: 40px;
+      background: #10b981;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    
+    .send-button:hover {
+      background: #059669;
+      transform: scale(1.05);
+    }
+    
+    .send-button:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* File input styling */
+    .file-input-container {
+      position: relative;
+    }
+    
+    .file-input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .file-input-button {
+      width: 40px;
+      height: 40px;
+      background: #6b7280;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    
+    .file-input-button:hover {
+      background: #4b5563;
+    }
+    
+    /* Image preview in input */
+    .image-preview {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+    
+    /* Full screen image modal */
+    .image-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .image-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+    }
+    
+    .image-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 18px;
+      margin: 8px 0;
+      max-width: 80px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    .typing-dots {
+      display: flex;
+      gap: 3px;
+    }
+    
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #9ca3af;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+      30% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col font-sans">
+  <!-- Header -->
+  <header class="bg-green-600 text-white py-3 sticky top-0 z-40 shadow-md">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <h1 class="text-xl font-semibold">Messages</h1>
+          <span id="online-status" class="ml-3 text-xs bg-green-500 px-2 py-1 rounded-full">Online</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button id="toggle-sidebar" class="md:hidden p-2 hover:bg-green-700 rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <span id="message-count" class="text-xs bg-green-500 px-2 py-1 rounded-full">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 flex overflow-hidden">
+    <!-- Sidebar (Desktop) -->
+    <div id="sidebar" class="sidebar-desktop w-80 bg-white border-r border-gray-200 flex flex-col">
+      <!-- Controls -->
+      <div class="p-4 border-b border-gray-200">
+        <h2 class="font-semibold text-gray-800 mb-3">Controls</h2>
+        <div class="space-y-3">
+          <button id="refresh-btn" class="w-full bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Auto-refresh</label>
+            <select id="auto-refresh-interval" class="block w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md">
+              <option value="5000">5 seconds</option>
+              <option value="10000" selected>10 seconds</option>
+              <option value="30000">30 seconds</option>
+              <option value="60000">1 minute</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Filter</label>
+            <select id="filter-type" class="block w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md">
+              <option value="all" selected>All messages</option>
+              <option value="text">Text only</option>
+              <option value="code">Code only</option>
+              <option value="image">Images only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Send Message Form -->
+      <div class="p-4 flex-1 flex flex-col">
+        <h3 class="font-semibold text-gray-800 mb-3">Send Message</h3>
+        <form id="send-message-form" class="flex-1 flex flex-col">
+          <div class="mb-3">
+            <input type="text" id="sender-name" name="sender" class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md" placeholder="Your name" required>
+          </div>
+          
+          <div class="flex-1 mb-3">
+            <textarea id="message-content" name="content" rows="4" class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md resize-none" placeholder="Type your message..."></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Attach Image</label>
+            <input type="file" id="image-input" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+            <div id="image-preview-container" class="mt-2 hidden">
+              <img id="image-preview" class="image-preview">
+              <button type="button" id="remove-image" class="mt-2 text-sm text-red-600 hover:text-red-800">Remove image</button>
+            </div>
+          </div>
+          
+          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div class="flex-1 flex flex-col bg-gray-50">
+      <!-- Messages Container -->
+      <div id="messages-container" class="flex-1 overflow-y-auto messages-scroll p-4" style="background-image: url('data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;40&quot; height=&quot;40&quot; viewBox=&quot;0 0 40 40&quot;><circle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;1&quot; fill=&quot;%23e5e7eb&quot; opacity=&quot;0.3&quot;/></svg>');">
+        <div id="messages-list" class="space-y-2">
+          <!-- Messages will be inserted here -->
+          <div class="flex justify-center items-center h-32 text-gray-400">
+            <div class="text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p>Loading messages...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Input Area -->
+      <div class="mobile-input input-area">
+        <form id="mobile-message-form" class="input-container">
+          <div class="file-input-container">
+            <input type="file" id="mobile-image-input" accept="image/*" class="file-input">
+            <button type="button" class="file-input-button">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+              </svg>
+            </button>
+          </div>
+          <textarea id="mobile-message-input" class="message-input" placeholder="Type a message..." rows="1"></textarea>
+          <button type="submit" class="send-button" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </form>
+        
+        <!-- Mobile image preview -->
+        <div id="mobile-image-preview-container" class="hidden mt-2">
+          <img id="mobile-image-preview" class="image-preview">
+          <button type="button" id="mobile-remove-image" class="text-sm text-red-600 hover:text-red-800 mt-1">Remove image</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Image Modal -->
+  <div id="image-modal" class="image-modal">
+    <button class="image-modal-close" id="close-image-modal">&times;</button>
+    <img id="modal-image" alt="Full size image">
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 z-50">
+    <span id="notification-message">Notification message</span>
+  </div>
+
+  <script>
+    // API configuration
+    const API_URL = window.location.origin + '/messages';
+    const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
+    let autoRefreshInterval = null;
+    let POLLING_INTERVAL = 10000;
+    let lastRefreshTime = new Date();
+    let messageFilter = 'all';
+    let messages = [];
+    let knownMessageIds = new Set();
+    let isFirstLoad = true;
+    let currentUser = localStorage.getItem('currentUser') || '';
+    let selectedImage = null;
+    let selectedImageMobile = null;
+
+    // DOM elements
+    const messagesContainer = document.getElementById('messages-container');
+    const messagesList = document.getElementById('messages-list');
+    const refreshBtn = document.getElementById('refresh-btn');
+    const autoRefreshIntervalSelect = document.getElementById('auto-refresh-interval');
+    const filterTypeSelect = document.getElementById('filter-type');
+    const messageCountElement = document.getElementById('message-count');
+    const sendMessageForm = document.getElementById('send-message-form');
+    const mobileMessageForm = document.getElementById('mobile-message-form');
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notification-message');
+    const imageModal = document.getElementById('image-modal');
+    const modalImage = document.getElementById('modal-image');
+    const closeImageModal = document.getElementById('close-image-modal');
+
+    // Image handling elements
+    const imageInput = document.getElementById('image-input');
+    const imagePreview = document.getElementById('image-preview');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const removeImageBtn = document.getElementById('remove-image');
+    
+    const mobileImageInput = document.getElementById('mobile-image-input');
+    const mobileImagePreview = document.getElementById('mobile-image-preview');
+    const mobileImagePreviewContainer = document.getElementById('mobile-image-preview-container');
+    const mobileRemoveImageBtn = document.getElementById('mobile-remove-image');
+    const mobileMessageInput = document.getElementById('mobile-message-input');
+    const mobileSendButton = mobileMessageForm.querySelector('.send-button');
+
+    // Auto-resize textarea
+    function autoResize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Initialize mobile message input
+    mobileMessageInput.addEventListener('input', function() {
+      autoResize(this);
+      toggleSendButton();
+    });
+
+    function toggleSendButton() {
+      const hasContent = mobileMessageInput.value.trim() || selectedImageMobile;
+      mobileSendButton.disabled = !hasContent;
+    }
+
+    // Image handling functions
+    function handleImageSelect(input, preview, container, isDesktop = true) {
+      const file = input.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          showNotification('Image size must be less than 5MB');
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          container.classList.remove('hidden');
+          
+          if (isDesktop) {
+            selectedImage = file;
+          } else {
+            selectedImageMobile = file;
+            toggleSendButton();
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeImage(input, container, isDesktop = true) {
+      input.value = '';
+      container.classList.add('hidden');
+      
+      if (isDesktop) {
+        selectedImage = null;
+      } else {
+        selectedImageMobile = null;
+        toggleSendButton();
+      }
+    }
+
+    // Image event listeners
+    imageInput.addEventListener('change', () => handleImageSelect(imageInput, imagePreview, imagePreviewContainer, true));
+    removeImageBtn.addEventListener('click', () => removeImage(imageInput, imagePreviewContainer, true));
+
+    mobileImageInput.addEventListener('change', () => handleImageSelect(mobileImageInput, mobileImagePreview, mobileImagePreviewContainer, false));
+    mobileRemoveImageBtn.addEventListener('click', () => removeImage(mobileImageInput, mobileImagePreviewContainer, false));
+
+    // Image modal functions
+    function openImageModal(imageSrc) {
+      modalImage.src = imageSrc;
+      imageModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModalFunc() {
+      imageModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    closeImageModal.addEventListener('click', closeImageModalFunc);
+    imageModal.addEventListener('click', function(e) {
+      if (e.target === imageModal) {
+        closeImageModalFunc();
+      }
+    });
+
+    // Convert file to base64
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    // Fetch messages function
+    async function fetchMessages() {
+      try {
+        const response = await fetch(API_URL, {
+          headers: {
+            'x-api-key': API_KEY
+          }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch messages');
+        
+        const newMessages = await response.json();
+        const wasEmpty = messages.length === 0;
+        const shouldScrollToBottom = isScrolledToBottom();
+        
+        const hasNewMessages = newMessages.some(msg => {
+          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
+          return !knownMessageIds.has(msgId);
+        });
+        
+        messages = newMessages;
+        
+        messages.forEach(msg => {
+          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
+          knownMessageIds.add(msgId);
+        });
+        
+        lastRefreshTime = new Date();
+        
+        const filteredMessages = filterMessages(messages);
+        displayMessages(filteredMessages, wasEmpty || hasNewMessages || isFirstLoad);
+        isFirstLoad = false;
+        
+        messageCountElement.textContent = messages.length;
+        
+        if (hasNewMessages && shouldScrollToBottom) {
+          scrollToBottom();
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+        showError('Failed to load messages. Please try again.');
+        return false;
+      }
+    }
+
+    function isScrolledToBottom() {
+      return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
+    }
+
+    function scrollToBottom() {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function filterMessages(allMessages) {
+      if (messageFilter === 'all') return allMessages;
+      return allMessages.filter(message => message.type === messageFilter);
+    }
+
+    function displayMessages(messagesToDisplay, forceScrollToBottom) {
+      if (messagesToDisplay.length === 0) {
+        messagesList.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-32 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <p>No messages found</p>
+          </div>
+        `;
+        return;
+      }
+
+      messagesList.innerHTML = '';
+
+      messagesToDisplay.forEach((message, index) => {
+        const messageDiv = document.createElement('div');
+        const isCurrentUser = message.sender === currentUser;
+        const isCode = message.type === 'code';
+        const isImage = message.type === 'image';
+        
+        messageDiv.className = `message-bubble new-message ${
+          isCurrentUser ? 'message-sent' : 'message-received'
+        } ${isCode ? 'message-code' : ''} ${isImage ? 'message-image' : ''}`;
+
+        if (isImage && message.image) {
+          // Image message
+          messageDiv.innerHTML = `
+            <div class="message-image-container" onclick="openImageModal('${message.image}')">
+              <img src="${message.image}" alt="Shared image" class="message-image-preview" loading="lazy">
+            </div>
+            ${message.content ? `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>` : ''}
+            <div class="message-meta">
+              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
+              <span>${formatTime(message.timestamp)}</span>
+            </div>
+          `;
+        } else if (isCode) {
+          // Code message
+          messageDiv.innerHTML = `
+            <div class="message-content">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-gray-600">${message.language || 'Code'}</span>
+                <span class="text-xs font-medium text-gray-600">${message.sender || 'Unknown'}</span>
+              </div>
+              <div class="code-container relative">
+                <button class="copy-button" title="Copy code">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                  Copy
+                </button>
+                <div class="code-editor" data-language="${message.language || 'text'}" data-content="${encodeURIComponent(message.content || '')}"></div>
+              </div>
+            </div>
+            <div class="message-meta">
+              <span></span>
+              <span>${formatTime(message.timestamp)}</span>
+            </div>
+          `;
+        } else {
+          // Text message
+          messageDiv.innerHTML = `
+            <div class="message-content">
+              ${message.content ? message.content.replace(/\n/g, '<br>') : 'No content'}
+            </div>
+            <div class="message-meta">
+              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
+              <span>${formatTime(message.timestamp)}</span>
+            </div>
+          `;
+        }
+
+        messagesList.appendChild(messageDiv);
+      });
+
+      // Initialize CodeMirror for code messages
+      document.querySelectorAll('.code-editor').forEach((element) => {
+        const language = element.getAttribute('data-language');
+        const content = decodeURIComponent(element.getAttribute('data-content'));
+        
+        let mode;
+        switch (language) {
+          case 'python':
+            mode = 'python';
+            break;
+          case 'javascript':
+            mode = 'javascript';
+            break;
+          case 'html':
+            mode = 'htmlmixed';
+            break;
+          case 'css':
+            mode = 'css';
+            break;
+          default:
+            mode = 'text/plain';
+        }
+        
+        element.innerHTML = '';
+        CodeMirror(element, {
+          value: content,
+          mode: mode,
+          theme: 'dracula',
+          lineNumbers: true,
+          readOnly: true,
+          viewportMargin: Infinity,
+          autoRefresh: true,
+          matchBrackets: true,
+          lineWrapping: true
+        });
+      });
+
+      // Add copy functionality to code blocks
+      document.querySelectorAll('.copy-button').forEach(button => {
+        button.addEventListener('click', async function(e) {
+          e.stopPropagation();
+          const codeContainer = this.closest('.code-container');
+          const codeEditor = codeContainer.querySelector('.CodeMirror');
+          const code = codeEditor.CodeMirror.getValue();
+          
+          try {
+            await navigator.clipboard.writeText(code);
+            const originalHTML = this.innerHTML;
+            this.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Copied!
+            `;
+            
+            setTimeout(() => {
+              this.innerHTML = originalHTML;
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy code:', err);
+          }
+        });
+      });
+
+      if (forceScrollToBottom) {
+        setTimeout(scrollToBottom, 100);
+      }
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      
+      if (messageDate.getTime() === today.getTime()) {
+        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      } else {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + 
+               date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+
+    function showError(message) {
+      messagesList.innerHTML = `
+        <div class="flex items-center justify-center h-32">
+          <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span>${message}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function startAutoRefresh() {
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
+      
+      autoRefreshInterval = setInterval(() => {
+        fetchMessages();
+      }, POLLING_INTERVAL);
+    }
+
+    function stopAutoRefresh() {
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+      }
+    }
+
+    function showNotification(message) {
+      notificationMessage.textContent = message;
+      notification.classList.remove('translate-y-20', 'opacity-0');
+      
+      setTimeout(() => {
+        notification.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    async function sendMessage(formData, imageFile = null) {
+      const content = formData.get('content') || '';
+      const sender = formData.get('sender') || currentUser;
+      
+      if (!sender.trim()) {
+        showNotification('Please enter your name');
+        return false;
+      }
+
+      if (!content.trim() && !imageFile) {
+        showNotification('Please enter a message or select an image');
+        return false;
+      }
+
+      // Save current user
+      currentUser = sender;
+      localStorage.setItem('currentUser', currentUser);
+      
+      let messageData = {
+        message: content,
+        timestamp: new Date().toISOString(),
+        sender: sender
+      };
+
+      // Add image if present
+      if (imageFile) {
+        try {
+          const base64Image = await fileToBase64(imageFile);
+          messageData.image = base64Image;
+          messageData.type = 'image';
+        } catch (error) {
+          console.error('Error converting image:', error);
+          showNotification('Failed to process image');
+          return false;
+        }
+      }
+      
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': API_KEY
+          },
+          body: JSON.stringify(messageData)
+        });
+        
+        if (!response.ok) throw new Error('Failed to send message');
+        
+        showNotification('Message sent successfully!');
+        await fetchMessages();
+        return true;
+        
+      } catch (error) {
+        console.error('Error sending message:', error);
+        showNotification('Failed to send message. Please try again.');
+        return false;
+      }
+    }
+
+    // Desktop form submission
+    sendMessageForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(sendMessageForm);
+      
+      const success = await sendMessage(formData, selectedImage);
+      if (success) {
+        sendMessageForm.reset();
+        removeImage(imageInput, imagePreviewContainer, true);
+      }
+    });
+
+    // Mobile form submission
+    mobileMessageForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('content', mobileMessageInput.value);
+      formData.append('sender', currentUser || 'Mobile User');
+      
+      const success = await sendMessage(formData, selectedImageMobile);
+      if (success) {
+        mobileMessageInput.value = '';
+        autoResize(mobileMessageInput);
+        removeImage(mobileImageInput, mobileImagePreviewContainer, false);
+        toggleSendButton();
+      }
+    });
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved user name
+      const senderNameInput = document.getElementById('sender-name');
+      if (currentUser && senderNameInput) {
+        senderNameInput.value = currentUser;
+      }
+
+      // Initial fetch
+      fetchMessages();
+      startAutoRefresh();
+      
+      // Refresh button
+      refreshBtn.addEventListener('click', () => {
+        fetchMessages();
+        showNotification('Messages refreshed');
+      });
+      
+      // Auto-refresh interval change
+      autoRefreshIntervalSelect.addEventListener('change', () => {
+        POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
+        stopAutoRefresh();
+        startAutoRefresh();
+        showNotification(`Auto-refresh set to ${POLLING_INTERVAL / 1000} seconds`);
+      });
+      
+      // Filter messages
+      filterTypeSelect.addEventListener('change', () => {
+        messageFilter = filterTypeSelect.value;
+        const filteredMessages = filterMessages(messages);
+        displayMessages(filteredMessages, true);
+      });
+
+      // Mobile sidebar toggle (if needed)
+      const toggleSidebar = document.getElementById('toggle-sidebar');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (toggleSidebar && sidebar) {
+        toggleSidebar.addEventListener('click', () => {
+          sidebar.classList.toggle('hidden');
+        });
+      }
     });
   </script>
 </body>
