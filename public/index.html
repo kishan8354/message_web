@@ -558,7 +558,7 @@
     // API configuration
     const API_URL = window.location.origin + '/messages';
     const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-    const SCREENSHOT_API_URL = 'http://172.18.11.231:5000/take-screenshot';// Replace with your actual API endpoint
+   const SCREENSHOT_API_URL = window.location.protocol + '//' + window.location.hostname + ':5000/take-screenshot';
     let autoRefreshInterval = null;
     let POLLING_INTERVAL = 10000;
     let lastRefreshTime = new Date();
@@ -1076,6 +1076,19 @@ async function takeScreenshot() {
     });
 
     // Event listeners
+    // Screenshot button event listener
+const screenshotBtn = document.getElementById('screenshot-btn');
+screenshotBtn.addEventListener('click', () => {
+  takeScreenshot();
+});
+
+// Mobile screenshot button event listener
+const mobileScreenshotBtn = document.getElementById('mobile-screenshot-btn');
+if (mobileScreenshotBtn) {
+  mobileScreenshotBtn.addEventListener('click', () => {
+    takeScreenshot();
+  });
+}
     document.addEventListener('DOMContentLoaded', () => {
       // Load saved user name
       const senderNameInput = document.getElementById('sender-name');
@@ -1092,18 +1105,7 @@ async function takeScreenshot() {
         fetchMessages();
         showNotification('Messages refreshed');
       });
-      // Screenshot button event listener
-const screenshotBtn = document.getElementById('screenshot-btn');
-screenshotBtn.addEventListener('click', () => {
-  takeScreenshot();
-});
-// Mobile screenshot button event listener
-const mobileScreenshotBtn = document.getElementById('mobile-screenshot-btn');
-if (mobileScreenshotBtn) {
-  mobileScreenshotBtn.addEventListener('click', () => {
-    takeScreenshot();
-  });
-}
+
       // Auto-refresh interval change
       autoRefreshIntervalSelect.addEventListener('change', () => {
         POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
