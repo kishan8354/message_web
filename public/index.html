@@ -25,7 +25,7 @@
     .CodeMirror {
       height: auto !important;
       min-height: 150px;
-      max-height: 400px;
+      max-height: none;
       font-size: 13px;
       border-radius: 0.5rem;
       overflow-y: auto;
@@ -36,8 +36,8 @@
     @media (max-width: 640px) {
       .CodeMirror {
         font-size: 11px;
-        min-height: 120px;
-        max-height: 300px;
+    min-height: 60px;
+    max-height: none;
       }
     }
     
@@ -558,7 +558,7 @@
     // API configuration
     const API_URL = window.location.origin + '/messages';
     const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-   const SCREENSHOT_API_URL = 'https://34d3-14-139-53-141.ngrok-free.app/take-screenshot';
+   const SCREENSHOT_API_URL = 'https://screenshot-api-y9sk.onrender.com/take-screenshot';
     let autoRefreshInterval = null;
     let POLLING_INTERVAL = 10000;
     let lastRefreshTime = new Date();
@@ -851,15 +851,24 @@
         element.innerHTML = '';
         CodeMirror(element, {
           value: content,
-          mode: mode,
-          theme: 'dracula',
-          lineNumbers: true,
-          readOnly: true,
-          viewportMargin: Infinity,
-          autoRefresh: true,
-          matchBrackets: true,
-          lineWrapping: true
+  mode: mode,
+  theme: 'dracula',
+  lineNumbers: true,
+  readOnly: true,
+  viewportMargin: Infinity,
+  autoRefresh: true,
+  matchBrackets: true,
+  lineWrapping: true,
+  scrollbarStyle: "simple"
         });
+        setTimeout(() => {
+  editor.setSize(null, 'auto');
+  const lineCount = editor.lineCount();
+  const lineHeight = 18;
+  const minHeight = 60;
+  const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + 20);
+  editor.setSize(null, calculatedHeight);
+}, 100);
       });
 
       // Add copy functionality to code blocks
