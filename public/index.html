@@ -558,7 +558,7 @@
     // API configuration
     const API_URL = window.location.origin + '/messages';
     const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-   const SCREENSHOT_API_URL = 'https://screenshot-api-y9sk.onrender.com/take-screenshot';
+   const SCREENSHOT_API_URL = 'https://ab87-14-139-53-141.ngrok-free.app/take-screenshot';
     let autoRefreshInterval = null;
     let POLLING_INTERVAL = 10000;
     let lastRefreshTime = new Date();
@@ -1019,7 +1019,6 @@
 // Screenshot function
 async function takeScreenshot() {
   try {
-    // Show loading notification
     console.log('Screenshot button clicked');
     console.log('API URL:', SCREENSHOT_API_URL);
     console.log('Current user:', currentUser);
@@ -1030,7 +1029,6 @@ async function takeScreenshot() {
       sender: currentUser || 'System'
     };
     
-    // ADD THESE LINES:
     console.log('Request body:', requestBody);
     console.log('API Key:', API_KEY);
     
@@ -1043,29 +1041,25 @@ async function takeScreenshot() {
       body: JSON.stringify(requestBody)
     });
     
-    // ADD THESE LINES:
     console.log('Response status:', response.status);
-    console.log('Response ok:', response.ok);
+    console.log('Response headers:', [...response.headers.entries()]);
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.log('Error response text:', errorText); // ADD THIS LINE
+      console.error('Error response text:', errorText);
       throw new Error(`Screenshot failed: ${response.status} - ${errorText}`);
     }
     
     const result = await response.json();
-    console.log('Screenshot result:', result); // ADD THIS LINE
+    console.log('Screenshot result:', result);
     showNotification('Screenshot taken successfully!');
     
-    // Refresh messages after a short delay
     setTimeout(() => {
       fetchMessages();
     }, 2000);
     
     return true;
-    
   } catch (error) {
-    // REPLACE THE CATCH BLOCK WITH:
     console.error('Screenshot error details:', error);
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
