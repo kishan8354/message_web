@@ -688,19 +688,47 @@
         reader.onerror = error => reject(error);
       });
     }
+// TEMPORARY TEST FUNCTION - Remove after testing
+function loadTestMessages() {
+  const testMessages = [
+    {
+      sender: 'Test User',
+      content: 'Hello, this is a test message!',
+      timestamp: new Date().toISOString(),
+      type: 'text'
+    },
+    {
+      sender: 'Another User',
+      content: 'console.log("Hello World");',
+      timestamp: new Date().toISOString(),
+      type: 'code',
+      language: 'javascript'
+    }
+  ];
+  
+  messages = testMessages;
+  displayMessages(messages, true);
+  messageCountElement.textContent = messages.length;
+}
 
+// Call this instead of fetchMessages() for testing
+// loadTestMessages(); // Uncomment this line to test
     // Fetch messages function
     async function fetchMessages() {
       try {
+        console.log('Fetching from:', API_URL); // ADD THIS LINE
         const response = await fetch(API_URL, {
           headers: {
             'x-api-key': API_KEY
           }
         });
-        
+        console.log('Response status:', response.status); // ADD THIS LINE
+
         if (!response.ok) throw new Error('Failed to fetch messages');
         
         const newMessages = await response.json();
+        console.log('Received messages:', newMessages); // ADD THIS LINE
+
         const wasEmpty = messages.length === 0;
         const shouldScrollToBottom = isScrolledToBottom();
         
@@ -709,7 +737,10 @@
           return !knownMessageIds.has(msgId);
         });
         
-        messages = newMessages;
+        messages = Array.isArray(newMessages) ? newMessages : [];
+if (messages.length === 0) {
+  console.log('No messages received from API');
+}
         
         messages.forEach(msg => {
           const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
