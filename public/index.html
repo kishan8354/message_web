@@ -1020,7 +1020,19 @@
 async function takeScreenshot() {
   try {
     // Show loading notification
+    console.log('Screenshot button clicked');
+    console.log('API URL:', SCREENSHOT_API_URL);
+    console.log('Current user:', currentUser);
     showNotification('Taking screenshot...');
+    
+    const requestBody = {
+      timestamp: new Date().toISOString(),
+      sender: currentUser || 'System'
+    };
+    
+    // ADD THESE LINES:
+    console.log('Request body:', requestBody);
+    console.log('API Key:', API_KEY);
     
     const response = await fetch(SCREENSHOT_API_URL, {
       method: 'POST',
@@ -1028,18 +1040,21 @@ async function takeScreenshot() {
         'Content-Type': 'application/json',
         'x-api-key': API_KEY
       },
-      body: JSON.stringify({
-        timestamp: new Date().toISOString(),
-        sender: currentUser || 'System'
-      })
+      body: JSON.stringify(requestBody)
     });
+    
+    // ADD THESE LINES:
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.log('Error response text:', errorText); // ADD THIS LINE
       throw new Error(`Screenshot failed: ${response.status} - ${errorText}`);
     }
     
     const result = await response.json();
+    console.log('Screenshot result:', result); // ADD THIS LINE
     showNotification('Screenshot taken successfully!');
     
     // Refresh messages after a short delay
@@ -1050,8 +1065,11 @@ async function takeScreenshot() {
     return true;
     
   } catch (error) {
-    console.error('Screenshot error:', error);
-    showNotification('Failed to take screenshot. Check console for details.');
+    // REPLACE THE CATCH BLOCK WITH:
+    console.error('Screenshot error details:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    showNotification('Failed to take screenshot: ' + error.message);
     return false;
   }
 }
