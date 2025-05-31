@@ -1,3 +1,4 @@
+<!-- code 5--------------------------------------------- -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -185,11 +186,44 @@
     .new-message {
       animation: fadeInUp 0.3s ease-out;
     }
+    
+    /* Action button styles */
+    .action-button {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-button:active {
+      transform: translateY(0);
+    }
+    
+    .action-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
     /* Screenshot button responsive */
 @media (max-width: 768px) {
-  #screenshot-btn {
+  .action-button {
     font-size: 12px;
-    padding: 8px 12px;
+    padding: 10px 14px;
   }
 }
     /* Scrollbar styling */
@@ -421,24 +455,49 @@
   <main class="flex-1 flex overflow-hidden"> 
     <!-- Sidebar (Desktop) -->
      <div id="sidebar" class="sidebar-desktop w-80 bg-white border-r border-gray-200 flex flex-col"> 
+      <!-- Action Buttons -->
+       <div class="p-4 border-b border-gray-200">
+        <h2 class="font-semibold text-gray-800 mb-4">Actions</h2>
+        <div class="space-y-2">
+          <!-- Take Screenshot Button -->
+          <button id="screenshot-btn" class="action-button bg-blue-600 text-white hover:bg-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Take Screenshot
+          </button>
+          
+          <!-- Send Solution Button -->
+          <button id="solution-btn" class="action-button bg-green-600 text-white hover:bg-green-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Send Solution
+          </button>
+          
+          <!-- Send Extracted Text Button -->
+          <button id="extract-text-btn" class="action-button bg-purple-600 text-white hover:bg-purple-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Send Extracted Text
+          </button>
+          
+          <!-- Listen Audio Button -->
+          <button id="audio-btn" class="action-button bg-orange-600 text-white hover:bg-orange-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+            Listen Audio
+          </button>
+        </div>
+      </div> 
+
       <!-- Controls -->
        <div class="p-4 border-b border-gray-200">
         <h2 class="font-semibold text-gray-800 mb-3">Controls</h2>
         <div class="space-y-3">
-          <button id="refresh-btn" class="w-full bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Refresh
-          </button>
-          <!-- Add this after refresh button -->
-<button id="screenshot-btn" class="w-full bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center text-sm">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-  Take Screenshot
-</button>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Auto-refresh</label>
             <select id="auto-refresh-interval" class="block w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md">
@@ -461,31 +520,15 @@
         </div>
       </div> 
 
-      <!-- Send Message Form -->
+      <!-- Status Section -->
        <div class="p-4 flex-1 flex flex-col">
-        <h3 class="font-semibold text-gray-800 mb-3">Send Message</h3>
-        <form id="send-message-form" class="flex-1 flex flex-col">
-          <div class="mb-3">
-            <input type="text" id="sender-name" name="sender" class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md" placeholder="Your name" required>
+        <h3 class="font-semibold text-gray-800 mb-3">Status</h3>
+        <div class="flex-1 bg-gray-50 rounded-lg p-3">
+          <div id="status-display" class="text-sm text-gray-600">
+            <p>System ready</p>
+            <p class="text-xs text-gray-500 mt-1">Last update: <span id="last-update">--</span></p>
           </div>
-          
-          <div class="flex-1 mb-3">
-            <textarea id="message-content" name="content" rows="4" class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md resize-none" placeholder="Type your message..."></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Attach Image</label>
-            <input type="file" id="image-input" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-            <div id="image-preview-container" class="mt-2 hidden">
-              <img id="image-preview" class="image-preview">
-              <button type="button" id="remove-image" class="mt-2 text-sm text-red-600 hover:text-red-800">Remove image</button>
-            </div>
-          </div>
-          
-          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-            Send Message
-          </button>
-        </form>
+        </div>
       </div>
     </div> 
 
@@ -506,42 +549,41 @@
         </div>
       </div> 
 
-      <!-- Mobile Input Area -->
+      <!-- Mobile Action Buttons -->
       <div class="mobile-input input-area">
-        <form id="mobile-message-form" class="input-container">
-          <div class="file-input-container">
-            <input type="file" id="mobile-image-input" accept="image/*" class="file-input">
-            <button type="button" class="file-input-button">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-              </svg>
-            </button>
-          </div>
-          
-          <!-- NEW SCREENSHOT BUTTON -->
-          <div class="file-input-container">
-            <button type="button" id="mobile-screenshot-btn" class="file-input-button" title="Take Screenshot">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </button>
-          </div>
-          
-          <textarea id="mobile-message-input" class="message-input" placeholder="Type a message..." rows="1"></textarea>
-          <button type="submit" class="send-button" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <button id="mobile-screenshot-btn" class="action-button bg-blue-600 text-white hover:bg-blue-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
+            Screenshot
           </button>
-        </form> 
-        
-        <!-- Mobile image preview -->
-         <div id="mobile-image-preview-container" class="hidden mt-2">
-          <img id="mobile-image-preview" class="image-preview">
-          <button type="button" id="mobile-remove-image" class="text-sm text-red-600 hover:text-red-800 mt-1">Remove image</button>
+          
+          <button id="mobile-solution-btn" class="action-button bg-green-600 text-white hover:bg-green-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Solution
+          </button>
+          
+          <button id="mobile-extract-text-btn" class="action-button bg-purple-600 text-white hover:bg-purple-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Extract Text
+          </button>
+          
+          <button id="mobile-audio-btn" class="action-button bg-orange-600 text-white hover:bg-orange-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+            Audio
+          </button>
         </div>
       </div>
+    </div>
+  </main>
 
   <!-- Image Modal -->
   <div id="image-modal" class="image-modal">
@@ -558,7 +600,15 @@
     // API configuration
     const API_URL = window.location.origin + '/messages';
     const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-   const SCREENSHOT_API_URL = 'https://4d43-14-139-53-141.ngrok-free.app/take-screenshot';
+    
+    // API endpoints for different actions
+    const API_ENDPOINTS = {
+        screenshot: 'https://your-backend-url/api/take-screenshot',
+        solution: 'https://your-backend-url/api/send-solution',
+        extractText: 'https://your-backend-url/api/send-extracted-text',
+        audio: 'https://your-backend-url/api/listen-audio'
+    };
+    
     let autoRefreshInterval = null;
     let POLLING_INTERVAL = 10000;
     let lastRefreshTime = new Date();
@@ -566,624 +616,492 @@
     let messages = [];
     let knownMessageIds = new Set();
     let isFirstLoad = true;
-    let currentUser = localStorage.getItem('currentUser') || '';
-    let selectedImage = null;
-    let selectedImageMobile = null;
+    let currentUser = 'System';
 
     // DOM elements
     const messagesContainer = document.getElementById('messages-container');
     const messagesList = document.getElementById('messages-list');
-    const refreshBtn = document.getElementById('refresh-btn');
     const autoRefreshIntervalSelect = document.getElementById('auto-refresh-interval');
     const filterTypeSelect = document.getElementById('filter-type');
     const messageCountElement = document.getElementById('message-count');
-    const sendMessageForm = document.getElementById('send-message-form');
-    const mobileMessageForm = document.getElementById('mobile-message-form');
     const notification = document.getElementById('notification');
     const notificationMessage = document.getElementById('notification-message');
     const imageModal = document.getElementById('image-modal');
     const modalImage = document.getElementById('modal-image');
     const closeImageModal = document.getElementById('close-image-modal');
+    const statusDisplay = document.getElementById('status-display');
+    const lastUpdateElement = document.getElementById('last-update');
 
-    // Image handling elements
-    const imageInput = document.getElementById('image-input');
-    const imagePreview = document.getElementById('image-preview');
-    const imagePreviewContainer = document.getElementById('image-preview-container');
-    const removeImageBtn = document.getElementById('remove-image');
-    
-    const mobileImageInput = document.getElementById('mobile-image-input');
-    const mobileImagePreview = document.getElementById('mobile-image-preview');
-    const mobileImagePreviewContainer = document.getElementById('mobile-image-preview-container');
-    const mobileRemoveImageBtn = document.getElementById('mobile-remove-image');
-    const mobileMessageInput = document.getElementById('mobile-message-input');
-    const mobileSendButton = mobileMessageForm.querySelector('.send-button');
+    // Action buttons
+    const screenshotBtn = document.getElementById('screenshot-btn');
+    const solutionBtn = document.getElementById('solution-btn');
+    const extractTextBtn = document.getElementById('extract-text-btn');
+    const audioBtn = document.getElementById('audio-btn');
 
-    // Auto-resize textarea
-    function autoResize(textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
+    // Mobile action buttons
+    const mobileScreenshotBtn = document.getElementById('mobile-screenshot-btn');
+    const mobileSolutionBtn = document.getElementById('mobile-solution-btn');
+    const mobileExtractTextBtn = document.getElementById('mobile-extract-text-btn');
+    const mobileAudioBtn = document.getElementById('mobile-audio-btn');
+
+    // Generic API call function
+    async function callAPI(endpoint, actionName, buttonElement) {
+        try {
+            // Disable button and show loading state
+            if (buttonElement) {
+                buttonElement.disabled = true;
+                const originalText = buttonElement.innerHTML;
+                buttonElement.innerHTML = `
+                    <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                `;
+                
+                // Restore button after delay
+                setTimeout(() => {
+                    buttonElement.disabled = false;
+                    buttonElement.innerHTML = originalText;
+                }, 3000);
+            }
+
+            console.log(`${actionName} button clicked`);
+            console.log('API URL:', endpoint);
+            console.log('Current user:', currentUser);
+            showNotification(`${actionName} in progress...`);
+            
+            const requestBody = {
+                timestamp: new Date().toISOString(),
+                sender: currentUser,
+                action: actionName.toLowerCase().replace(' ', '_')
+            };
+            
+            console.log('Request body:', requestBody);
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': API_KEY
+                },
+                body: JSON.stringify(requestBody)
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response headers:', [...response.headers.entries()]);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response text:', errorText);
+                throw new Error(`${actionName} failed: ${response.status} - ${errorText}`);
+            }
+            
+            const result = await response.json();
+            console.log(`${actionName} result:`, result);
+            showNotification(`${actionName} completed successfully!`);
+            
+            // Refresh messages after successful action
+            setTimeout(() => {
+                fetchMessages();
+            }, 2000);
+            
+            return true;
+        } catch (error) {
+            console.error(`${actionName} error details:`, error);
+            showNotification(`Failed to ${actionName.toLowerCase()}: ${error.message}`);
+            return false;
+        }
     }
 
-    // Initialize mobile message input
-    mobileMessageInput.addEventListener('input', function() {
-      autoResize(this);
-      toggleSendButton();
-    });
-
-    function toggleSendButton() {
-      const hasContent = mobileMessageInput.value.trim() || selectedImageMobile;
-      mobileSendButton.disabled = !hasContent;
+    // Individual action functions
+    async function takeScreenshot(buttonElement) {
+        return await callAPI(API_ENDPOINTS.screenshot, 'Take Screenshot', buttonElement);
     }
 
-    // Image handling functions
-    function handleImageSelect(input, preview, container, isDesktop = true) {
-      const file = input.files[0];
-      if (file) {
-        if (file.size > 5 * 1024 * 1024) { // 5MB limit
-          showNotification('Image size must be less than 5MB');
-          input.value = '';
-          return;
+    async function sendSolution(buttonElement) {
+        return await callAPI(API_ENDPOINTS.solution, 'Send Solution', buttonElement);
+    }
+
+    async function extractText(buttonElement) {
+        return await callAPI(API_ENDPOINTS.extractText, 'Extract Text', buttonElement);
+    }
+
+    async function listenAudio(buttonElement) {
+        return await callAPI(API_ENDPOINTS.audio, 'Listen Audio', buttonElement);
+    }
+
+    // Fetch messages function
+    async function fetchMessages() {
+        try {
+            console.log('Fetching from:', API_URL);
+            const response = await fetch(API_URL, {
+                headers: {
+                    'x-api-key': API_KEY
+                }
+            });
+            console.log('Response status:', response.status);
+
+            if (!response.ok) throw new Error('Failed to fetch messages');
+            
+            const newMessages = await response.json();
+            console.log('Received messages:', newMessages);
+
+            const wasEmpty = messages.length === 0;
+            const shouldScrollToBottom = isScrolledToBottom();
+            
+            const hasNewMessages = newMessages.some(msg => {
+                const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
+                return !knownMessageIds.has(msgId);
+            });
+            
+            messages = Array.isArray(newMessages) ? newMessages : [];
+            if (messages.length === 0) {
+                console.log('No messages received from API');
+            }
+            
+            messages.forEach(msg => {
+                const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
+                knownMessageIds.add(msgId);
+            });
+            
+            lastRefreshTime = new Date();
+            updateLastUpdateTime();
+            
+            const filteredMessages = filterMessages(messages);
+            displayMessages(filteredMessages, wasEmpty || hasNewMessages || isFirstLoad);
+            isFirstLoad = false;
+            
+            messageCountElement.textContent = messages.length;
+            
+            if (hasNewMessages && shouldScrollToBottom) {
+                scrollToBottom();
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            showError('Failed to load messages. Please try again.');
+            return false;
+        }
+    }
+
+    function updateLastUpdateTime() {
+        if (lastUpdateElement) {
+            lastUpdateElement.textContent = `Last updated: ${formatTime(lastRefreshTime)}`;
+        }
+    }
+
+    function isScrolledToBottom() {
+        return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
+    }
+
+    function scrollToBottom() {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function filterMessages(allMessages) {
+        if (messageFilter === 'all') return allMessages;
+        return allMessages.filter(message => message.type === messageFilter);
+    }
+
+    function displayMessages(messagesToDisplay, forceScrollToBottom) {
+        if (messagesToDisplay.length === 0) {
+            messagesList.innerHTML = `
+                <div class="flex flex-col items-center justify-center h-32 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p>No messages found</p>
+                </div>
+            `;
+            return;
         }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          preview.src = e.target.result;
-          container.classList.remove('hidden');
-          
-          if (isDesktop) {
-            selectedImage = file;
-          } else {
-            selectedImageMobile = file;
-            toggleSendButton();
-          }
-        };
-        reader.readAsDataURL(file);
-      }
+        messagesList.innerHTML = '';
+
+        messagesToDisplay.forEach((message, index) => {
+            const messageDiv = document.createElement('div');
+            const isCurrentUser = message.sender === currentUser;
+            const isCode = message.type === 'code';
+            const isImage = message.type === 'image';
+            
+            messageDiv.className = `message-bubble new-message ${
+                isCurrentUser ? 'message-sent' : 'message-received'
+            } ${isCode ? 'message-code' : ''} ${isImage ? 'message-image' : ''}`;
+
+            if (isImage && message.image) {
+                // Image message
+                messageDiv.innerHTML = `
+                    <div class="message-image-container" onclick="openImageModal('${message.image}')">
+                        <img src="${message.image}" alt="Shared image" class="message-image-preview" loading="lazy">
+                    </div>
+                    ${message.content ? `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>` : ''}
+                    <div class="message-meta">
+                        <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
+                        <span>${formatTime(message.timestamp)}</span>
+                    </div>
+                `;
+            } else if (isCode) {
+                // Code message
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-gray-600">${message.language || 'Code'}</span>
+                            <span class="text-xs font-medium text-gray-600">${message.sender || 'Unknown'}</span>
+                        </div>
+                        <div class="code-container relative">
+                            <button class="copy-button" title="Copy code">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                                Copy
+                            </button>
+                            <div class="code-editor" data-language="${message.language || 'text'}" data-content="${encodeURIComponent(message.content || '')}"></div>
+                        </div>
+                    </div>
+                    <div class="message-meta">
+                        <span></span>
+                        <span>${formatTime(message.timestamp)}</span>
+                    </div>
+                `;
+            } else {
+                // Text message
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        ${message.content ? message.content.replace(/\n/g, '<br>') : 'No content'}
+                    </div>
+                    <div class="message-meta">
+                        <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
+                        <span>${formatTime(message.timestamp)}</span>
+                    </div>
+                `;
+            }
+
+            messagesList.appendChild(messageDiv);
+        });
+
+        // Initialize CodeMirror for code messages
+        document.querySelectorAll('.code-editor').forEach((element) => {
+            const language = element.getAttribute('data-language');
+            const content = decodeURIComponent(element.getAttribute('data-content'));
+            
+            let mode;
+            switch (language) {
+                case 'python':
+                    mode = 'python';
+                    break;
+                case 'javascript':
+                    mode = 'javascript';
+                    break;
+                case 'html':
+                    mode = 'htmlmixed';
+                    break;
+                case 'css':
+                    mode = 'css';
+                    break;
+                default:
+                    mode = 'text/plain';
+            }
+            
+            element.innerHTML = '';
+            const editor = CodeMirror(element, {
+                value: content,
+                mode: mode,
+                theme: 'dracula',
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity,
+                autoRefresh: true,
+                matchBrackets: true,
+                lineWrapping: true,
+                scrollbarStyle: "simple"
+            });
+            
+            setTimeout(() => {
+                editor.setSize(null, 'auto');
+                const lineCount = editor.lineCount();
+                const lineHeight = 18;
+                const minHeight = 60;
+                const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + 20);
+                editor.setSize(null, calculatedHeight);
+            }, 100);
+        });
+
+        // Add copy functionality to code blocks
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', async function(e) {
+                e.stopPropagation();
+                const codeContainer = this.closest('.code-container');
+                const codeEditor = codeContainer.querySelector('.CodeMirror');
+                const code = codeEditor.CodeMirror.getValue();
+                
+                try {
+                    await navigator.clipboard.writeText(code);
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Copied!
+                    `;
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy code:', err);
+                }
+            });
+        });
+
+        if (forceScrollToBottom) {
+            setTimeout(scrollToBottom, 100);
+        }
     }
 
-    function removeImage(input, container, isDesktop = true) {
-      input.value = '';
-      container.classList.add('hidden');
-      
-      if (isDesktop) {
-        selectedImage = null;
-      } else {
-        selectedImageMobile = null;
-        toggleSendButton();
-      }
+    function formatTime(timestamp) {
+        if (!timestamp) return '';
+        const date = new Date(timestamp);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+        if (messageDate.getTime() === today.getTime()) {
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        } else {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + 
+                   date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
     }
 
-    // Image event listeners
-    imageInput.addEventListener('change', () => handleImageSelect(imageInput, imagePreview, imagePreviewContainer, true));
-    removeImageBtn.addEventListener('click', () => removeImage(imageInput, imagePreviewContainer, true));
+    function showError(message) {
+        messagesList.innerHTML = `
+            <div class="flex items-center justify-center h-32">
+                <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            </div>
+        `;
+    }
 
-    mobileImageInput.addEventListener('change', () => handleImageSelect(mobileImageInput, mobileImagePreview, mobileImagePreviewContainer, false));
-    mobileRemoveImageBtn.addEventListener('click', () => removeImage(mobileImageInput, mobileImagePreviewContainer, false));
+    function startAutoRefresh() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+        }
+        
+        autoRefreshInterval = setInterval(() => {
+            fetchMessages();
+        }, POLLING_INTERVAL);
+    }
+
+    function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+            clearInterval(autoRefreshInterval);
+            autoRefreshInterval = null;
+        }
+    }
+
+    function showNotification(message) {
+        notificationMessage.textContent = message;
+        notification.classList.remove('translate-y-20', 'opacity-0');
+        
+        setTimeout(() => {
+            notification.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+    }
 
     // Image modal functions
     function openImageModal(imageSrc) {
-      modalImage.src = imageSrc;
-      imageModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
+        modalImage.src = imageSrc;
+        imageModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeImageModalFunc() {
-      imageModal.classList.remove('active');
-      document.body.style.overflow = 'auto';
+        imageModal.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
 
     closeImageModal.addEventListener('click', closeImageModalFunc);
     imageModal.addEventListener('click', function(e) {
-      if (e.target === imageModal) {
-        closeImageModalFunc();
-      }
+        if (e.target === imageModal) {
+            closeImageModalFunc();
+        }
     });
 
-    // Convert file to base64
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    }
-// TEMPORARY TEST FUNCTION - Remove after testing
-function loadTestMessages() {
-  const testMessages = [
-    {
-      sender: 'Test User',
-      content: 'Hello, this is a test message!',
-      timestamp: new Date().toISOString(),
-      type: 'text'
-    },
-    {
-      sender: 'Another User',
-      content: 'console.log("Hello World");',
-      timestamp: new Date().toISOString(),
-      type: 'code',
-      language: 'javascript'
-    }
-  ];
-  
-  messages = testMessages;
-  displayMessages(messages, true);
-  messageCountElement.textContent = messages.length;
-}
-
-// Call this instead of fetchMessages() for testing
-// loadTestMessages(); // Uncomment this line to test
-    // Fetch messages function
-    async function fetchMessages() {
-      try {
-        console.log('Fetching from:', API_URL); // ADD THIS LINE
-        const response = await fetch(API_URL, {
-          headers: {
-            'x-api-key': API_KEY
-          }
-        });
-        console.log('Response status:', response.status); // ADD THIS LINE
-
-        if (!response.ok) throw new Error('Failed to fetch messages');
-        
-        const newMessages = await response.json();
-        console.log('Received messages:', newMessages); // ADD THIS LINE
-
-        const wasEmpty = messages.length === 0;
-        const shouldScrollToBottom = isScrolledToBottom();
-        
-        const hasNewMessages = newMessages.some(msg => {
-          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
-          return !knownMessageIds.has(msgId);
-        });
-        
-        messages = Array.isArray(newMessages) ? newMessages : [];
-if (messages.length === 0) {
-  console.log('No messages received from API');
-}
-        
-        messages.forEach(msg => {
-          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
-          knownMessageIds.add(msgId);
-        });
-        
-        lastRefreshTime = new Date();
-        
-        const filteredMessages = filterMessages(messages);
-        displayMessages(filteredMessages, wasEmpty || hasNewMessages || isFirstLoad);
-        isFirstLoad = false;
-        
-        messageCountElement.textContent = messages.length;
-        
-        if (hasNewMessages && shouldScrollToBottom) {
-          scrollToBottom();
-        }
-        
-        return true;
-      } catch (error) {
-        console.error('Error fetching messages:', error);
-        showError('Failed to load messages. Please try again.');
-        return false;
-      }
-    }
-
-    function isScrolledToBottom() {
-      return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
-    }
-
-    function scrollToBottom() {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function filterMessages(allMessages) {
-      if (messageFilter === 'all') return allMessages;
-      return allMessages.filter(message => message.type === messageFilter);
-    }
-
-    function displayMessages(messagesToDisplay, forceScrollToBottom) {
-      if (messagesToDisplay.length === 0) {
-        messagesList.innerHTML = `
-          <div class="flex flex-col items-center justify-center h-32 text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <p>No messages found</p>
-          </div>
-        `;
-        return;
-      }
-
-      messagesList.innerHTML = '';
-
-      messagesToDisplay.forEach((message, index) => {
-        const messageDiv = document.createElement('div');
-        const isCurrentUser = message.sender === currentUser;
-        const isCode = message.type === 'code';
-        const isImage = message.type === 'image';
-        
-        messageDiv.className = `message-bubble new-message ${
-          isCurrentUser ? 'message-sent' : 'message-received'
-        } ${isCode ? 'message-code' : ''} ${isImage ? 'message-image' : ''}`;
-
-        if (isImage && message.image) {
-          // Image message
-          messageDiv.innerHTML = `
-            <div class="message-image-container" onclick="openImageModal('${message.image}')">
-              <img src="${message.image}" alt="Shared image" class="message-image-preview" loading="lazy">
-            </div>
-            ${message.content ? `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>` : ''}
-            <div class="message-meta">
-              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
-              <span>${formatTime(message.timestamp)}</span>
-            </div>
-          `;
-        } else if (isCode) {
-          // Code message
-          messageDiv.innerHTML = `
-            <div class="message-content">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-gray-600">${message.language || 'Code'}</span>
-                <span class="text-xs font-medium text-gray-600">${message.sender || 'Unknown'}</span>
-              </div>
-              <div class="code-container relative">
-                <button class="copy-button" title="Copy code">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                  </svg>
-                  Copy
-                </button>
-                <div class="code-editor" data-language="${message.language || 'text'}" data-content="${encodeURIComponent(message.content || '')}"></div>
-              </div>
-            </div>
-            <div class="message-meta">
-              <span></span>
-              <span>${formatTime(message.timestamp)}</span>
-            </div>
-          `;
-        } else {
-          // Text message
-          messageDiv.innerHTML = `
-            <div class="message-content">
-              ${message.content ? message.content.replace(/\n/g, '<br>') : 'No content'}
-            </div>
-            <div class="message-meta">
-              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
-              <span>${formatTime(message.timestamp)}</span>
-            </div>
-          `;
-        }
-
-        messagesList.appendChild(messageDiv);
-      });
-
-      // Initialize CodeMirror for code messages
-      document.querySelectorAll('.code-editor').forEach((element) => {
-        const language = element.getAttribute('data-language');
-        const content = decodeURIComponent(element.getAttribute('data-content'));
-        
-        let mode;
-        switch (language) {
-          case 'python':
-            mode = 'python';
-            break;
-          case 'javascript':
-            mode = 'javascript';
-            break;
-          case 'html':
-            mode = 'htmlmixed';
-            break;
-          case 'css':
-            mode = 'css';
-            break;
-          default:
-            mode = 'text/plain';
-        }
-        
-        element.innerHTML = '';
-        CodeMirror(element, {
-          value: content,
-  mode: mode,
-  theme: 'dracula',
-  lineNumbers: true,
-  readOnly: true,
-  viewportMargin: Infinity,
-  autoRefresh: true,
-  matchBrackets: true,
-  lineWrapping: true,
-  scrollbarStyle: "simple"
-        });
-        setTimeout(() => {
-  editor.setSize(null, 'auto');
-  const lineCount = editor.lineCount();
-  const lineHeight = 18;
-  const minHeight = 60;
-  const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + 20);
-  editor.setSize(null, calculatedHeight);
-}, 100);
-      });
-
-      // Add copy functionality to code blocks
-      document.querySelectorAll('.copy-button').forEach(button => {
-        button.addEventListener('click', async function(e) {
-          e.stopPropagation();
-          const codeContainer = this.closest('.code-container');
-          const codeEditor = codeContainer.querySelector('.CodeMirror');
-          const code = codeEditor.CodeMirror.getValue();
-          
-          try {
-            await navigator.clipboard.writeText(code);
-            const originalHTML = this.innerHTML;
-            this.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              Copied!
-            `;
-            
-            setTimeout(() => {
-              this.innerHTML = originalHTML;
-            }, 2000);
-          } catch (err) {
-            console.error('Failed to copy code:', err);
-          }
-        });
-      });
-
-      if (forceScrollToBottom) {
-        setTimeout(scrollToBottom, 100);
-      }
-    }
-
-    function formatTime(timestamp) {
-      if (!timestamp) return '';
-      const date = new Date(timestamp);
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-      
-      if (messageDate.getTime() === today.getTime()) {
-        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      } else {
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + 
-               date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      }
-    }
-
-    function showError(message) {
-      messagesList.innerHTML = `
-        <div class="flex items-center justify-center h-32">
-          <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-            </svg>
-            <span>${message}</span>
-          </div>
-        </div>
-      `;
-    }
-
-    function startAutoRefresh() {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-      }
-      
-      autoRefreshInterval = setInterval(() => {
-        fetchMessages();
-      }, POLLING_INTERVAL);
-    }
-
-    function stopAutoRefresh() {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-      }
-    }
-
-    function showNotification(message) {
-      notificationMessage.textContent = message;
-      notification.classList.remove('translate-y-20', 'opacity-0');
-      
-      setTimeout(() => {
-        notification.classList.add('translate-y-20', 'opacity-0');
-      }, 3000);
-    }
-
-    async function sendMessage(formData, imageFile = null) {
-      const content = formData.get('content') || '';
-      const sender = formData.get('sender') || currentUser;
-      
-      if (!sender.trim()) {
-        showNotification('Please enter your name');
-        return false;
-      }
-
-      if (!content.trim() && !imageFile) {
-        showNotification('Please enter a message or select an image');
-        return false;
-      }
-
-      // Save current user
-      currentUser = sender;
-      localStorage.setItem('currentUser', currentUser);
-      
-      let messageData = {
-        message: content,
-        timestamp: new Date().toISOString(),
-        sender: sender
-      };
-
-      // Add image if present
-      if (imageFile) {
-        try {
-          const base64Image = await fileToBase64(imageFile);
-          messageData.image = base64Image;
-          messageData.type = 'image';
-        } catch (error) {
-          console.error('Error converting image:', error);
-          showNotification('Failed to process image');
-          return false;
-        }
-      }
-      
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY
-          },
-          body: JSON.stringify(messageData)
-        });
-        
-        if (!response.ok) throw new Error('Failed to send message');
-        
-        showNotification('Message sent successfully!');
-        await fetchMessages();
-        return true;
-        
-      } catch (error) {
-        console.error('Error sending message:', error);
-        showNotification('Failed to send message. Please try again.');
-        return false;
-      }
-    }
-// Screenshot function
-async function takeScreenshot() {
-  try {
-    console.log('Screenshot button clicked');
-    console.log('API URL:', SCREENSHOT_API_URL);
-    console.log('Current user:', currentUser);
-    showNotification('Taking screenshot...');
-    
-    const requestBody = {
-      timestamp: new Date().toISOString(),
-      sender: currentUser || 'System'
-    };
-    
-    console.log('Request body:', requestBody);
-    console.log('API Key:', API_KEY);
-    
-    const response = await fetch(SCREENSHOT_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY
-      },
-      body: JSON.stringify(requestBody)
-    });
-    
-    console.log('Response status:', response.status);
-    console.log('Response headers:', [...response.headers.entries()]);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error response text:', errorText);
-      throw new Error(`Screenshot failed: ${response.status} - ${errorText}`);
-    }
-    
-    const result = await response.json();
-    console.log('Screenshot result:', result);
-    showNotification('Screenshot taken successfully!');
-    
-    setTimeout(() => {
-      fetchMessages();
-    }, 2000);
-    
-    return true;
-  } catch (error) {
-    console.error('Screenshot error details:', error);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    showNotification('Failed to take screenshot: ' + error.message);
-    return false;
-  }
-}
-    // Desktop form submission
-    sendMessageForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const formData = new FormData(sendMessageForm);
-      
-      const success = await sendMessage(formData, selectedImage);
-      if (success) {
-        sendMessageForm.reset();
-        removeImage(imageInput, imagePreviewContainer, true);
-      }
-    });
-
-    // Mobile form submission
-    mobileMessageForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      
-      const formData = new FormData();
-      formData.append('content', mobileMessageInput.value);
-      formData.append('sender', currentUser || 'Mobile User');
-      
-      const success = await sendMessage(formData, selectedImageMobile);
-      if (success) {
-        mobileMessageInput.value = '';
-        autoResize(mobileMessageInput);
-        removeImage(mobileImageInput, mobileImagePreviewContainer, false);
-        toggleSendButton();
-      }
-    });
-
-    // Event listeners
-    // Screenshot button event listener
-const screenshotBtn = document.getElementById('screenshot-btn');
-screenshotBtn.addEventListener('click', () => {
-  takeScreenshot();
-});
-
-// Mobile screenshot button event listener
-const mobileScreenshotBtn = document.getElementById('mobile-screenshot-btn');
-if (mobileScreenshotBtn) {
-  mobileScreenshotBtn.addEventListener('click', () => {
-    takeScreenshot();
-  });
-}
+    // Event listeners for action buttons
     document.addEventListener('DOMContentLoaded', () => {
-      // Load saved user name
-      const senderNameInput = document.getElementById('sender-name');
-      if (currentUser && senderNameInput) {
-        senderNameInput.value = currentUser;
-      }
+        // Desktop action button event listeners
+        if (screenshotBtn) {
+            screenshotBtn.addEventListener('click', () => takeScreenshot(screenshotBtn));
+        }
+        
+        if (solutionBtn) {
+            solutionBtn.addEventListener('click', () => sendSolution(solutionBtn));
+        }
+        
+        if (extractTextBtn) {
+            extractTextBtn.addEventListener('click', () => extractText(extractTextBtn));
+        }
+        
+        if (audioBtn) {
+            audioBtn.addEventListener('click', () => listenAudio(audioBtn));
+        }
 
-      // Initial fetch
-      fetchMessages();
-      startAutoRefresh();
-      
-      // Refresh button
-      refreshBtn.addEventListener('click', () => {
+        // Mobile action button event listeners
+        if (mobileScreenshotBtn) {
+            mobileScreenshotBtn.addEventListener('click', () => takeScreenshot(mobileScreenshotBtn));
+        }
+        
+        if (mobileSolutionBtn) {
+            mobileSolutionBtn.addEventListener('click', () => sendSolution(mobileSolutionBtn));
+        }
+        
+        if (mobileExtractTextBtn) {
+            mobileExtractTextBtn.addEventListener('click', () => extractText(mobileExtractTextBtn));
+        }
+        
+        if (mobileAudioBtn) {
+            mobileAudioBtn.addEventListener('click', () => listenAudio(mobileAudioBtn));
+        }
+
+        // Auto-refresh interval change
+        if (autoRefreshIntervalSelect) {
+            autoRefreshIntervalSelect.addEventListener('change', () => {
+                POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
+                stopAutoRefresh();
+                startAutoRefresh();
+                showNotification(`Auto-refresh set to ${POLLING_INTERVAL / 1000} seconds`);
+            });
+        }
+        
+        // Filter messages
+        if (filterTypeSelect) {
+            filterTypeSelect.addEventListener('change', () => {
+                messageFilter = filterTypeSelect.value;
+                const filteredMessages = filterMessages(messages);
+                displayMessages(filteredMessages, true);
+            });
+        }
+
+        // Mobile sidebar toggle (if needed)
+        const toggleSidebar = document.getElementById('toggle-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (toggleSidebar && sidebar) {
+            toggleSidebar.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+            });
+        }
+
+        // Initial setup
         fetchMessages();
-        showNotification('Messages refreshed');
-      });
-
-      // Auto-refresh interval change
-      autoRefreshIntervalSelect.addEventListener('change', () => {
-        POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
-        stopAutoRefresh();
         startAutoRefresh();
-        showNotification(`Auto-refresh set to ${POLLING_INTERVAL / 1000} seconds`);
-      });
-      
-      // Filter messages
-      filterTypeSelect.addEventListener('change', () => {
-        messageFilter = filterTypeSelect.value;
-        const filteredMessages = filterMessages(messages);
-        displayMessages(filteredMessages, true);
-      });
-
-      // Mobile sidebar toggle (if needed)
-      const toggleSidebar = document.getElementById('toggle-sidebar');
-      const sidebar = document.getElementById('sidebar');
-      
-      if (toggleSidebar && sidebar) {
-        toggleSidebar.addEventListener('click', () => {
-          sidebar.classList.toggle('hidden');
-        });
-      }
     });
-  </script>
+</script>
 </body>
 </html>
-<!-- code 5--------------------------------------------- -->
