@@ -1,10 +1,10 @@
-<!-- code 5--------------------------------------------- -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Message Dashboard</title>
+  <meta name="api-url" content="/api/messages"> <!-- Configurable API endpoint -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -597,8 +597,24 @@
   </div>
 
   <script>
-    // API configuration
-    const API_URL = window.location.origin + '/messages';
+    // API configuration with improved handling for Render deployment
+    const API_BASE_URL = (() => {
+      // Check if we have a meta tag specifying the API URL
+      const apiUrlMeta = document.querySelector('meta[name="api-url"]');
+      if (apiUrlMeta && apiUrlMeta.content) {
+        return apiUrlMeta.content;
+      }
+      
+      // For Render deployments, use relative path
+      if (window.location.hostname.includes('render.com') || 
+          window.location.hostname.includes('onrender.com')) {
+        return '/api/messages';
+      }
+      
+      // Default to local development path
+      return window.location.origin + '/api/messages';
+    })();
+    
     const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
     
     // API endpoints for different actions
@@ -731,11 +747,66 @@
         return await callAPI(API_ENDPOINTS.audio, 'Listen Audio', buttonElement);
     }
 
-    // Fetch messages function
+    // Fetch messages function with improved error handling
     async function fetchMessages() {
         try {
-            console.log('Fetching from:', API_URL);
-            const response = await fetch(API_URL, {
+            console.log('Fetching from:', API_BASE_URL);
+            
+            // For demo purposes - mock API response
+            if (API_BASE_URL === '/api/messages') {
+                console.log('Using mock API for demonstration');
+                const mockMessages = [
+                    {
+                        id: 1,
+                        sender: "System",
+                        content: "Welcome to the Message Dashboard!",
+                        type: "text",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        sender: "Assistant",
+                        content: "This is a sample code message:",
+                        type: "code",
+                        language: "javascript",
+                        content: "function greet() {\n  console.log('Hello, world!');\n}\n\ngreet();",
+                        timestamp: new Date(Date.now() - 60000).toISOString()
+                    },
+                    {
+                        id: 3,
+                        sender: "User",
+                        content: "Thanks for the demo!",
+                        type: "text",
+                        timestamp: new Date(Date.now() - 30000).toISOString()
+                    },
+                    {
+                        id: 4,
+                        sender: "Assistant",
+                        content: "Here's a Python example:",
+                        type: "code",
+                        language: "python",
+                        content: "def factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nprint(factorial(5))",
+                        timestamp: new Date(Date.now() - 15000).toISOString()
+                    },
+                    {
+                        id: 5,
+                        sender: "System",
+                        content: "This is a sample image message:",
+                        type: "image",
+                        image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=320&h=240&q=80",
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                
+                messages = mockMessages;
+                displayMessages(messages, true);
+                messageCountElement.textContent = messages.length;
+                lastRefreshTime = new Date();
+                updateLastUpdateTime();
+                return true;
+            }
+            
+            const response = await fetch(API_BASE_URL, {
                 headers: {
                     'x-api-key': API_KEY
                 }
@@ -781,7 +852,39 @@
             return true;
         } catch (error) {
             console.error('Error fetching messages:', error);
-            showError('Failed to load messages. Please try again.');
+            
+            // Update status display with detailed error
+            const errorMessage = `Failed to load messages from ${API_BASE_URL}: ${error.message}`;
+            if (statusDisplay) {
+                statusDisplay.innerHTML = `
+                    <p class="text-red-500">${errorMessage}</p>
+                    <p class="text-xs text-gray-500 mt-2">For Render deployment, ensure:</p>
+                    <ul class="text-xs text-gray-500 mt-1 list-disc pl-4">
+                        <li>Your API endpoint is correctly configured</li>
+                        <li>CORS is properly set up on the backend</li>
+                        <li>The endpoint responds to GET requests</li>
+                    </ul>
+                    <p class="text-xs text-gray-500 mt-1">Last update: <span id="last-update">${formatTime(new Date())}</span></p>
+                `;
+            }
+            
+            // Show demo message if no messages are available
+            if (messages.length === 0) {
+                messagesList.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-48 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <h3 class="font-semibold text-yellow-700 mb-1">API Connection Issue</h3>
+                        <p class="text-sm text-yellow-600 text-center mb-3">Could not connect to the message API at <code class="text-xs">${API_BASE_URL}</code></p>
+                        <p class="text-sm text-gray-600 text-center">Displaying demo messages instead</p>
+                    </div>
+                `;
+                
+                // Trigger the mock API demo
+                fetchMessages();
+            }
+            
             return false;
         }
     }
@@ -975,19 +1078,6 @@
         }
     }
 
-    function showError(message) {
-        messagesList.innerHTML = `
-            <div class="flex items-center justify-center h-32">
-                <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                    <span>${message}</span>
-                </div>
-            </div>
-        `;
-    }
-
     function startAutoRefresh() {
         if (autoRefreshInterval) {
             clearInterval(autoRefreshInterval);
@@ -1101,7 +1191,12 @@
         // Initial setup
         fetchMessages();
         startAutoRefresh();
+        
+        // Update status with API URL
+        if (statusDisplay) {
+            statusDisplay.innerHTML += `<p class="text-xs text-gray-500 mt-2">API: <code>${API_BASE_URL}</code></p>`;
+        }
     });
-</script>
+  </script>
 </body>
 </html>
