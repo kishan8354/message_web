@@ -731,21 +731,206 @@
     }
 
     // Individual action functions
-    async function takeScreenshot(buttonElement) {
-        return await callAPI(API_ENDPOINTS.screenshot, 'Take Screenshot', buttonElement);
+    async function captureScreenshot() {
+    try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ 
+            video: { cursor: "always" },
+            audio: false
+        });
+        const track = stream.getVideoTracks()[0];
+        const imageCapture = new ImageCapture(track);
+        const bitmap = await imageCapture.grabFrame();
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(bitmap, 0, 0);
+        
+        return canvas.toDataURL('image/png');
+    } catch (error) {
+        console.error('Error capturing screenshot:', error);
+        showNotification(`Screenshot capture failed: ${error.message}`);
+        return null;
     }
+}
 
-    async function sendSolution(buttonElement) {
-        return await callAPI(API_ENDPOINTS.solution, 'Send Solution', buttonElement);
-    }
+async function takeScreenshot(buttonElement) {
+    try {
+        // Disable button and show loading
+        buttonElement.disabled = true;
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = `
+            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Capturing...
+        `;
 
-    async function extractText(buttonElement) {
-        return await callAPI(API_ENDPOINTS.extractText, 'Extract Text', buttonElement);
-    }
+        const screenshotData = await captureScreenshot();
+        if (!screenshotData) return false;
 
-    async function listenAudio(buttonElement) {
-        return await callAPI(API_ENDPOINTS.audio, 'Listen Audio', buttonElement);
+        const response = await fetch(API_ENDPOINTS.screenshot, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_KEY
+            },
+            body: JSON.stringify({ 
+                image: screenshotData.split(',')[1] // Remove data URL prefix
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || `API error: ${response.status}`);
+        }
+        
+        showNotification('Screenshot processed successfully!');
+        fetchMessages(); // Refresh messages
+        return true;
+    } catch (error) {
+        console.error('Screenshot error:', error);
+        showNotification(`Take Screenshot failed: ${error.message}`);
+        return false;
+    } finally {
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalText;
     }
+}
+
+async function sendSolution(buttonElement) {
+    try {
+        buttonElement.disabled = true;
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = `
+            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Capturing...
+        `;
+
+        const screenshotData = await captureScreenshot();
+        if (!screenshotData) return false;
+
+        const response = await fetch(API_ENDPOINTS.solution, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_KEY
+            },
+            body: JSON.stringify({ 
+                image: screenshotData.split(',')[1],
+                action: 'solution'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || `API error: ${response.status}`);
+        }
+        
+        showNotification('Solution request sent!');
+        fetchMessages(); // Refresh messages
+        return true;
+    } catch (error) {
+        console.error('Solution request error:', error);
+        showNotification(`Send Solution failed: ${error.message}`);
+        return false;
+    } finally {
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalText;
+    }
+}
+
+async function extractText(buttonElement) {
+    try {
+        buttonElement.disabled = true;
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = `
+            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Capturing...
+        `;
+
+        const screenshotData = await captureScreenshot();
+        if (!screenshotData) return false;
+
+        const response = await fetch(API_ENDPOINTS.extractText, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_KEY
+            },
+            body: JSON.stringify({ 
+                image: screenshotData.split(',')[1],
+                action: 'extract-text'
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || `API error: ${response.status}`);
+        }
+        
+        showNotification('Text extraction sent!');
+        fetchMessages(); // Refresh messages
+        return true;
+    } catch (error) {
+        console.error('Extract text error:', error);
+        showNotification(`Extract Text failed: ${error.message}`);
+        return false;
+    } finally {
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalText;
+    }
+}
+
+async function listenAudio(buttonElement) {
+    try {
+        buttonElement.disabled = true;
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = `
+            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+        `;
+
+        const response = await fetch(API_ENDPOINTS.audio, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': API_KEY
+            },
+            body: JSON.stringify({
+                action: 'listen-audio',
+                timestamp: new Date().toISOString()
+            })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || `API error: ${response.status}`);
+        }
+        
+        showNotification('Audio request processed!');
+        fetchMessages(); // Refresh messages
+        return true;
+    } catch (error) {
+        console.error('Audio request error:', error);
+        showNotification(`Listen Audio failed: ${error.message}`);
+        return false;
+    } finally {
+        buttonElement.disabled = false;
+        buttonElement.innerHTML = originalText;
+    }
+}
 
     // Fetch messages function with improved error handling
     async function fetchMessages() {
