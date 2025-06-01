@@ -649,7 +649,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            // 'x-api-key': API_KEY
+            'x-api-key': API_KEY
           },
           body: JSON.stringify({
             ...data,
@@ -719,9 +719,9 @@
     async function fetchMessages() {
       try {
         const response = await fetch(API_URL, {
-          // headers: {
-          //   // 'x-api-key': API_KEY
-          // }
+          headers: {
+            'x-api-key': API_KEY
+          }
         });
 
         if (!response.ok) throw new Error('Failed to fetch messages');
