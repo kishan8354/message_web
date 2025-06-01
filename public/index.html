@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Message Dashboard</title>
-  <meta name="api-url" content="/api/messages"> <!-- Configurable API endpoint -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -186,44 +185,11 @@
     .new-message {
       animation: fadeInUp 0.3s ease-out;
     }
-    
-    /* Action button styles */
-    .action-button {
-      width: 100%;
-      padding: 12px 16px;
-      margin-bottom: 8px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    .action-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    .action-button:active {
-      transform: translateY(0);
-    }
-    
-    .action-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
     /* Screenshot button responsive */
 @media (max-width: 768px) {
-  .action-button {
+  #screenshot-btn {
     font-size: 12px;
-    padding: 10px 14px;
+    padding: 8px 12px;
   }
 }
     /* Scrollbar styling */
@@ -429,6 +395,75 @@
         opacity: 1;
       }
     }
+
+    /* Action buttons styling */
+    .action-btn {
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .action-btn:active {
+      transform: translateY(0);
+    }
+    
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .action-btn i {
+      font-size: 16px;
+    }
+    
+    /* Specific button colors */
+    .screenshot-btn {
+      background: #3B82F6;
+      color: white;
+    }
+    
+    .solution-btn {
+      background: #10B981;
+      color: white;
+    }
+    
+    .text-btn {
+      background: #8B5CF6;
+      color: white;
+    }
+    
+    .audio-btn {
+      background: #EC4899;
+      color: white;
+    }
+    
+    /* Mobile button grid */
+    .mobile-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+    
+    @media (max-width: 480px) {
+      .mobile-buttons-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col font-sans"> 
@@ -455,12 +490,13 @@
   <main class="flex-1 flex overflow-hidden"> 
     <!-- Sidebar (Desktop) -->
      <div id="sidebar" class="sidebar-desktop w-80 bg-white border-r border-gray-200 flex flex-col"> 
-      <!-- Action Buttons -->
+      <!-- Controls -->
        <div class="p-4 border-b border-gray-200">
-        <h2 class="font-semibold text-gray-800 mb-4">Actions</h2>
-        <div class="space-y-2">
-          <!-- Take Screenshot Button -->
-          <button id="screenshot-btn" class="action-button bg-blue-600 text-white hover:bg-blue-700">
+        <h2 class="font-semibold text-gray-800 mb-3">Actions</h2>
+        <div class="space-y-3">
+          <!-- Removed refresh button -->
+          
+          <button id="screenshot-btn" class="action-btn screenshot-btn w-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -468,36 +504,27 @@
             Take Screenshot
           </button>
           
-          <!-- Send Solution Button -->
-          <button id="solution-btn" class="action-button bg-green-600 text-white hover:bg-green-700">
+          <button id="send-solution-btn" class="action-btn solution-btn w-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Send Solution
           </button>
           
-          <!-- Send Extracted Text Button -->
-          <button id="extract-text-btn" class="action-button bg-purple-600 text-white hover:bg-purple-700">
+          <button id="send-text-btn" class="action-btn text-btn w-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Send Extracted Text
           </button>
           
-          <!-- Listen Audio Button -->
-          <button id="audio-btn" class="action-button bg-orange-600 text-white hover:bg-orange-700">
+          <button id="listen-audio-btn" class="action-btn audio-btn w-full">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
             </svg>
             Listen Audio
           </button>
-        </div>
-      </div> 
-
-      <!-- Controls -->
-       <div class="p-4 border-b border-gray-200">
-        <h2 class="font-semibold text-gray-800 mb-3">Controls</h2>
-        <div class="space-y-3">
+          
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Auto-refresh</label>
             <select id="auto-refresh-interval" class="block w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md">
@@ -520,16 +547,7 @@
         </div>
       </div> 
 
-      <!-- Status Section -->
-       <div class="p-4 flex-1 flex flex-col">
-        <h3 class="font-semibold text-gray-800 mb-3">Status</h3>
-        <div class="flex-1 bg-gray-50 rounded-lg p-3">
-          <div id="status-display" class="text-sm text-gray-600">
-            <p>System ready</p>
-            <p class="text-xs text-gray-500 mt-1">Last update: <span id="last-update">--</span></p>
-          </div>
-        </div>
-      </div>
+      <!-- Removed contact form -->
     </div> 
 
     <!-- Messages Area -->
@@ -549,41 +567,39 @@
         </div>
       </div> 
 
-      <!-- Mobile Action Buttons -->
+      <!-- Mobile Buttons Area -->
       <div class="mobile-input input-area">
-        <div class="grid grid-cols-2 gap-2 mb-3">
-          <button id="mobile-screenshot-btn" class="action-button bg-blue-600 text-white hover:bg-blue-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="mobile-buttons-grid">
+          <button id="mobile-screenshot-btn" class="action-btn screenshot-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             Screenshot
           </button>
           
-          <button id="mobile-solution-btn" class="action-button bg-green-600 text-white hover:bg-green-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button id="mobile-send-solution-btn" class="action-btn solution-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Solution
           </button>
           
-          <button id="mobile-extract-text-btn" class="action-button bg-purple-600 text-white hover:bg-purple-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button id="mobile-send-text-btn" class="action-btn text-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Extract Text
+            Text
           </button>
           
-          <button id="mobile-audio-btn" class="action-button bg-orange-600 text-white hover:bg-orange-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          <button id="mobile-listen-audio-btn" class="action-btn audio-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
             </svg>
             Audio
           </button>
         </div>
       </div>
-    </div>
-  </main>
 
   <!-- Image Modal -->
   <div id="image-modal" class="image-modal">
@@ -597,33 +613,13 @@
   </div>
 
   <script>
-    // API configuration with improved handling for Render deployment
-    const API_BASE_URL = (() => {
-      // Check if we have a meta tag specifying the API URL
-      const apiUrlMeta = document.querySelector('meta[name="api-url"]');
-      if (apiUrlMeta && apiUrlMeta.content) {
-        return apiUrlMeta.content;
-      }
-      
-      // For Render deployments, use relative path
-      if (window.location.hostname.includes('render.com') || 
-          window.location.hostname.includes('onrender.com')) {
-        return '/api/messages';
-      }
-      
-      // Default to local development path
-      return window.location.origin + '/api/messages';
-    })();
-    
+    // API configuration
+    const API_URL = window.location.origin + '/messages';
     const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-    
-    // API endpoints for different actions
-    const API_ENDPOINTS = {
-        screenshot: 'https://web-service-ysi4.onrender.com/process-action',
-        solution: 'https://web-service-ysi4.onrender.com/process-action',
-        extractText: 'https://web-service-ysi4.onrender.com/process-action',
-        audio: 'https://your-backend-url/api/listen-audio'
-    };
+    const SCREENSHOT_API_URL = 'http://172.18.11.231:5000/capture-screenshot';
+    const SOLUTION_API_URL = 'http://172.18.11.231:5000/send-solution';
+    const TEXT_API_URL = 'http://172.18.11.231:5000/send-text';
+    const AUDIO_API_URL = 'https://your-backend.com/api/listen-audio';
     
     let autoRefreshInterval = null;
     let POLLING_INTERVAL = 10000;
@@ -632,7 +628,7 @@
     let messages = [];
     let knownMessageIds = new Set();
     let isFirstLoad = true;
-    let currentUser = 'System';
+    let currentUser = localStorage.getItem('currentUser') || '';
 
     // DOM elements
     const messagesContainer = document.getElementById('messages-container');
@@ -645,742 +641,403 @@
     const imageModal = document.getElementById('image-modal');
     const modalImage = document.getElementById('modal-image');
     const closeImageModal = document.getElementById('close-image-modal');
-    const statusDisplay = document.getElementById('status-display');
-    const lastUpdateElement = document.getElementById('last-update');
 
-    // Action buttons
+    // Button elements
     const screenshotBtn = document.getElementById('screenshot-btn');
-    const solutionBtn = document.getElementById('solution-btn');
-    const extractTextBtn = document.getElementById('extract-text-btn');
-    const audioBtn = document.getElementById('audio-btn');
-
-    // Mobile action buttons
+    const sendSolutionBtn = document.getElementById('send-solution-btn');
+    const sendTextBtn = document.getElementById('send-text-btn');
+    const listenAudioBtn = document.getElementById('listen-audio-btn');
     const mobileScreenshotBtn = document.getElementById('mobile-screenshot-btn');
-    const mobileSolutionBtn = document.getElementById('mobile-solution-btn');
-    const mobileExtractTextBtn = document.getElementById('mobile-extract-text-btn');
-    const mobileAudioBtn = document.getElementById('mobile-audio-btn');
+    const mobileSendSolutionBtn = document.getElementById('mobile-send-solution-btn');
+    const mobileSendTextBtn = document.getElementById('mobile-send-text-btn');
+    const mobileListenAudioBtn = document.getElementById('mobile-listen-audio-btn');
 
-    // Generic API call function
-    async function callAPI(endpoint, actionName, buttonElement) {
-        try {
-            // Disable button and show loading state
-            if (buttonElement) {
-                buttonElement.disabled = true;
-                const originalText = buttonElement.innerHTML;
-                buttonElement.innerHTML = `
-                    <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                `;
-                
-                // Restore button after delay
-                setTimeout(() => {
-                    buttonElement.disabled = false;
-                    buttonElement.innerHTML = originalText;
-                }, 3000);
-            }
-
-            console.log(`${actionName} button clicked`);
-            console.log('API URL:', endpoint);
-            console.log('Current user:', currentUser);
-            showNotification(`${actionName} in progress...`);
-            
-            const requestBody = {
-                timestamp: new Date().toISOString(),
-                sender: currentUser,
-                action: actionName.toLowerCase().replace(' ', '_')
-            };
-            
-            console.log('Request body:', requestBody);
-            
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': API_KEY
-                },
-                body: JSON.stringify(requestBody)
-            });
-            
-            console.log('Response status:', response.status);
-            console.log('Response headers:', [...response.headers.entries()]);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response text:', errorText);
-                throw new Error(`${actionName} failed: ${response.status} - ${errorText}`);
-            }
-            
-            const result = await response.json();
-            console.log(`${actionName} result:`, result);
-            showNotification(`${actionName} completed successfully!`);
-            
-            // Refresh messages after successful action
-            setTimeout(() => {
-                fetchMessages();
-            }, 2000);
-            
-            return true;
-        } catch (error) {
-            console.error(`${actionName} error details:`, error);
-            showNotification(`Failed to ${actionName.toLowerCase()}: ${error.message}`);
-            return false;
-        }
-    }
-
-    // Individual action functions
-    async function captureScreenshot() {
-    try {
-        const stream = await navigator.mediaDevices.getDisplayMedia({ 
-            video: { cursor: "always" },
-            audio: false
+    // API call function
+    async function callApi(endpoint, data = {}) {
+      try {
+        showNotification(`Sending request to ${endpoint}...`);
+        
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': API_KEY
+          },
+          body: JSON.stringify({
+            ...data,
+            timestamp: new Date().toISOString(),
+            sender: currentUser || 'System'
+          })
         });
-        const track = stream.getVideoTracks()[0];
-        const imageCapture = new ImageCapture(track);
-        const bitmap = await imageCapture.grabFrame();
         
-        const canvas = document.createElement('canvas');
-        canvas.width = bitmap.width;
-        canvas.height = bitmap.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(bitmap, 0, 0);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`API request failed: ${response.status} - ${errorText}`);
+        }
         
-        return canvas.toDataURL('image/png');
-    } catch (error) {
-        console.error('Error capturing screenshot:', error);
-        showNotification(`Screenshot capture failed: ${error.message}`);
+        const result = await response.json();
+        showNotification('Action completed successfully!');
+        return result;
+      } catch (error) {
+        console.error('API Error:', error);
+        showNotification('Failed: ' + error.message);
         return null;
+      }
     }
-}
 
-async function takeScreenshot(buttonElement) {
-    try {
-        buttonElement.disabled = true;
-        const originalText = buttonElement.innerHTML;
-        buttonElement.innerHTML = `
-            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Capturing Screenshot...
-        `;
-
-        const screenshotData = await captureScreenshot();
-        if (!screenshotData) return false;
-
-        const response = await fetch(API_ENDPOINTS.screenshot, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': API_KEY
-            },
-            body: JSON.stringify({ 
-                action: 'screenshot',
-                image: screenshotData.split(',')[1]
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || `API error: ${response.status}`);
-        }
-        
-        showNotification('📸 Screenshot captured and processed!');
-        fetchMessages();
-        return true;
-    } catch (error) {
-        console.error('Screenshot error:', error);
-        showNotification(`Screenshot failed: ${error.message || 'Unknown error'}`);
-        return false;
-    } finally {
-        buttonElement.disabled = false;
-        buttonElement.innerHTML = originalText;
+    // Screenshot function
+    async function takeScreenshot() {
+      return await callApi(SCREENSHOT_API_URL);
     }
-}
 
-async function sendSolution(buttonElement) {
-    try {
-        buttonElement.disabled = true;
-        const originalText = buttonElement.innerHTML;
-        buttonElement.innerHTML = `
-            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Generating Solution...
-        `;
-
-        const screenshotData = await captureScreenshot();
-        if (!screenshotData) return false;
-
-        const response = await fetch(API_ENDPOINTS.solution, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': API_KEY
-            },
-            body: JSON.stringify({ 
-                image: screenshotData.split(',')[1],
-                action: 'solution'
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || `API error: ${response.status}`);
-        }
-        
-        showNotification('🧠 Solution generated and sent!');
-        fetchMessages();
-        return true;
-    } catch (error) {
-        console.error('Solution request error:', error);
-        showNotification(`Solution failed: ${error.message || 'Unknown error'}`);
-        return false;
-    } finally {
-        buttonElement.disabled = false;
-        buttonElement.innerHTML = originalText;
+    // Send solution function
+    async function sendSolution() {
+      // In a real implementation, you would collect solution data
+      const solutionData = {
+        content: "This is the solution content",
+        type: "code",
+        language: "javascript"
+      };
+      return await callApi(SOLUTION_API_URL, solutionData);
     }
-}
 
-async function extractText(buttonElement) {
-    try {
-        buttonElement.disabled = true;
-        const originalText = buttonElement.innerHTML;
-        buttonElement.innerHTML = `
-            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Extracting Text...
-        `;
-
-        const screenshotData = await captureScreenshot();
-        if (!screenshotData) return false;
-
-        const response = await fetch(API_ENDPOINTS.extractText, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': API_KEY
-            },
-            body: JSON.stringify({ 
-                image: screenshotData.split(',')[1],
-                action: 'extract-text'
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || `API error: ${response.status}`);
-        }
-        
-        showNotification('🔍 Text extracted and sent!');
-        fetchMessages();
-        return true;
-    } catch (error) {
-        console.error('Extract text error:', error);
-        showNotification(`Text extraction failed: ${error.message || 'Unknown error'}`);
-        return false;
-    } finally {
-        buttonElement.disabled = false;
-        buttonElement.innerHTML = originalText;
+    // Send extracted text function
+    async function sendExtractedText() {
+      // In a real implementation, you would extract text from somewhere
+      const textData = {
+        content: "This is the extracted text content",
+        type: "text"
+      };
+      return await callApi(TEXT_API_URL, textData);
     }
-}
 
-async function listenAudio(buttonElement) {
-    try {
-        buttonElement.disabled = true;
-        const originalText = buttonElement.innerHTML;
-        buttonElement.innerHTML = `
-            <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Processing Audio...
-        `;
-
-        const response = await fetch(API_ENDPOINTS.audio, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': API_KEY
-            },
-            body: JSON.stringify({
-                action: 'audio',  // Changed from 'listen-audio'
-                timestamp: new Date().toISOString()
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || `API error: ${response.status}`);
-        }
-        
-        showNotification('🔊 Audio request processed!');
-        fetchMessages();
-        return true;
-    } catch (error) {
-        console.error('Audio request error:', error);
-        showNotification(`Audio failed: ${error.message || 'Unknown error'}`);
-        return false;
-    } finally {
-        buttonElement.disabled = false;
-        buttonElement.innerHTML = originalText;
+    // Listen audio function
+    async function listenAudio() {
+      // In a real implementation, you would handle audio input
+      return await callApi(AUDIO_API_URL);
     }
-}
 
-    // Fetch messages function with improved error handling
+    // Button event listeners
+    screenshotBtn.addEventListener('click', takeScreenshot);
+    sendSolutionBtn.addEventListener('click', sendSolution);
+    sendTextBtn.addEventListener('click', sendExtractedText);
+    listenAudioBtn.addEventListener('click', listenAudio);
+    
+    mobileScreenshotBtn.addEventListener('click', takeScreenshot);
+    mobileSendSolutionBtn.addEventListener('click', sendSolution);
+    mobileSendTextBtn.addEventListener('click', sendExtractedText);
+    mobileListenAudioBtn.addEventListener('click', listenAudio);
+
+    // Fetch messages function
     async function fetchMessages() {
-        try {
-            console.log('Fetching from:', API_BASE_URL);
-            
-            // For demo purposes - mock API response
-            if (API_BASE_URL === '/api/messages') {
-                console.log('Using mock API for demonstration');
-                const mockMessages = [
-                    {
-                        id: 1,
-                        sender: "System",
-                        content: "Welcome to the Message Dashboard!",
-                        type: "text",
-                        timestamp: new Date().toISOString()
-                    },
-                    {
-                        id: 2,
-                        sender: "Assistant",
-                        content: "This is a sample code message:",
-                        type: "code",
-                        language: "javascript",
-                        content: "function greet() {\n  console.log('Hello, world!');\n}\n\ngreet();",
-                        timestamp: new Date(Date.now() - 60000).toISOString()
-                    },
-                    {
-                        id: 3,
-                        sender: "User",
-                        content: "Thanks for the demo!",
-                        type: "text",
-                        timestamp: new Date(Date.now() - 30000).toISOString()
-                    },
-                    {
-                        id: 4,
-                        sender: "Assistant",
-                        content: "Here's a Python example:",
-                        type: "code",
-                        language: "python",
-                        content: "def factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nprint(factorial(5))",
-                        timestamp: new Date(Date.now() - 15000).toISOString()
-                    },
-                    {
-                        id: 5,
-                        sender: "System",
-                        content: "This is a sample image message:",
-                        type: "image",
-                        image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=320&h=240&q=80",
-                        timestamp: new Date().toISOString()
-                    }
-                ];
-                
-                messages = mockMessages;
-                displayMessages(messages, true);
-                messageCountElement.textContent = messages.length;
-                lastRefreshTime = new Date();
-                updateLastUpdateTime();
-                return true;
-            }
-            
-            const response = await fetch(API_BASE_URL, {
-                headers: {
-                    'x-api-key': API_KEY
-                }
-            });
-            console.log('Response status:', response.status);
+      try {
+        const response = await fetch(API_URL, {
+          headers: {
+            'x-api-key': API_KEY
+          }
+        });
 
-            if (!response.ok) throw new Error('Failed to fetch messages');
-            
-            const newMessages = await response.json();
-            console.log('Received messages:', newMessages);
-
-            const wasEmpty = messages.length === 0;
-            const shouldScrollToBottom = isScrolledToBottom();
-            
-            const hasNewMessages = newMessages.some(msg => {
-                const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
-                return !knownMessageIds.has(msgId);
-            });
-            
-            messages = Array.isArray(newMessages) ? newMessages : [];
-            if (messages.length === 0) {
-                console.log('No messages received from API');
-            }
-            
-            messages.forEach(msg => {
-                const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
-                knownMessageIds.add(msgId);
-            });
-            
-            lastRefreshTime = new Date();
-            updateLastUpdateTime();
-            
-            const filteredMessages = filterMessages(messages);
-            displayMessages(filteredMessages, wasEmpty || hasNewMessages || isFirstLoad);
-            isFirstLoad = false;
-            
-            messageCountElement.textContent = messages.length;
-            
-            if (hasNewMessages && shouldScrollToBottom) {
-                scrollToBottom();
-            }
-            
-            return true;
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-            
-            // Update status display with detailed error
-            const errorMessage = `Failed to load messages from ${API_BASE_URL}: ${error.message}`;
-            if (statusDisplay) {
-                statusDisplay.innerHTML = `
-                    <p class="text-red-500">${errorMessage}</p>
-                    <p class="text-xs text-gray-500 mt-2">For Render deployment, ensure:</p>
-                    <ul class="text-xs text-gray-500 mt-1 list-disc pl-4">
-                        <li>Your API endpoint is correctly configured</li>
-                        <li>CORS is properly set up on the backend</li>
-                        <li>The endpoint responds to GET requests</li>
-                    </ul>
-                    <p class="text-xs text-gray-500 mt-1">Last update: <span id="last-update">${formatTime(new Date())}</span></p>
-                `;
-            }
-            
-            // Show demo message if no messages are available
-            if (messages.length === 0) {
-                messagesList.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-48 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <h3 class="font-semibold text-yellow-700 mb-1">API Connection Issue</h3>
-                        <p class="text-sm text-yellow-600 text-center mb-3">Could not connect to the message API at <code class="text-xs">${API_BASE_URL}</code></p>
-                        <p class="text-sm text-gray-600 text-center">Displaying demo messages instead</p>
-                    </div>
-                `;
-                
-                // Trigger the mock API demo
-                fetchMessages();
-            }
-            
-            return false;
+        if (!response.ok) throw new Error('Failed to fetch messages');
+        
+        const newMessages = await response.json();
+        const wasEmpty = messages.length === 0;
+        const shouldScrollToBottom = isScrolledToBottom();
+        
+        const hasNewMessages = newMessages.some(msg => {
+          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
+          return !knownMessageIds.has(msgId);
+        });
+        
+        messages = Array.isArray(newMessages) ? newMessages : [];
+        
+        messages.forEach(msg => {
+          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
+          knownMessageIds.add(msgId);
+        });
+        
+        lastRefreshTime = new Date();
+        
+        const filteredMessages = filterMessages(messages);
+        displayMessages(filteredMessages, wasEmpty || hasNewMessages || isFirstLoad);
+        isFirstLoad = false;
+        
+        messageCountElement.textContent = messages.length;
+        
+        if (hasNewMessages && shouldScrollToBottom) {
+          scrollToBottom();
         }
-    }
-
-    function updateLastUpdateTime() {
-        if (lastUpdateElement) {
-            lastUpdateElement.textContent = `Last updated: ${formatTime(lastRefreshTime)}`;
-        }
+        
+        return true;
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+        showError('Failed to load messages. Please try again.');
+        return false;
+      }
     }
 
     function isScrolledToBottom() {
-        return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
+      return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
     }
 
     function scrollToBottom() {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     function filterMessages(allMessages) {
-        if (messageFilter === 'all') return allMessages;
-        return allMessages.filter(message => message.type === messageFilter);
+      if (messageFilter === 'all') return allMessages;
+      return allMessages.filter(message => message.type === messageFilter);
     }
 
     function displayMessages(messagesToDisplay, forceScrollToBottom) {
-        if (messagesToDisplay.length === 0) {
-            messagesList.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-32 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <p>No messages found</p>
-                </div>
-            `;
-            return;
+      if (messagesToDisplay.length === 0) {
+        messagesList.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-32 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <p>No messages found</p>
+          </div>
+        `;
+        return;
+      }
+
+      messagesList.innerHTML = '';
+
+      messagesToDisplay.forEach((message, index) => {
+        const messageDiv = document.createElement('div');
+        const isCurrentUser = message.sender === currentUser;
+        const isCode = message.type === 'code';
+        const isImage = message.type === 'image';
+        
+        messageDiv.className = `message-bubble new-message ${
+          isCurrentUser ? 'message-sent' : 'message-received'
+        } ${isCode ? 'message-code' : ''} ${isImage ? 'message-image' : ''}`;
+
+        if (isImage && message.image) {
+          // Image message
+          messageDiv.innerHTML = `
+            <div class="message-image-container" onclick="openImageModal('${message.image}')">
+              <img src="${message.image}" alt="Shared image" class="message-image-preview" loading="lazy">
+            </div>
+            ${message.content ? `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>` : ''}
+            <div class="message-meta">
+              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
+              <span>${formatTime(message.timestamp)}</span>
+            </div>
+          `;
+        } else if (isCode) {
+          // Code message
+          messageDiv.innerHTML = `
+            <div class="message-content">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-medium text-gray-600">${message.language || 'Code'}</span>
+                <span class="text-xs font-medium text-gray-600">${message.sender || 'Unknown'}</span>
+              </div>
+              <div class="code-container relative">
+                <button class="copy-button" title="Copy code">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                  Copy
+                </button>
+                <div class="code-editor" data-language="${message.language || 'text'}" data-content="${encodeURIComponent(message.content || '')}"></div>
+              </div>
+            </div>
+            <div class="message-meta">
+              <span></span>
+              <span>${formatTime(message.timestamp)}</span>
+            </div>
+          `;
+        } else {
+          // Text message
+          messageDiv.innerHTML = `
+            <div class="message-content">
+              ${message.content ? message.content.replace(/\n/g, '<br>') : 'No content'}
+            </div>
+            <div class="message-meta">
+              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
+              <span>${formatTime(message.timestamp)}</span>
+            </div>
+          `;
         }
 
-        messagesList.innerHTML = '';
+        messagesList.appendChild(messageDiv);
+      });
 
-        messagesToDisplay.forEach((message, index) => {
-            const messageDiv = document.createElement('div');
-            const isCurrentUser = message.sender === currentUser;
-            const isCode = message.type === 'code';
-            const isImage = message.type === 'image';
-            
-            messageDiv.className = `message-bubble new-message ${
-                isCurrentUser ? 'message-sent' : 'message-received'
-            } ${isCode ? 'message-code' : ''} ${isImage ? 'message-image' : ''}`;
-
-            if (isImage && message.image) {
-                // Image message
-                messageDiv.innerHTML = `
-                    <div class="message-image-container" onclick="openImageModal('${message.image}')">
-                        <img src="${message.image}" alt="Shared image" class="message-image-preview" loading="lazy">
-                    </div>
-                    ${message.content ? `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>` : ''}
-                    <div class="message-meta">
-                        <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
-                        <span>${formatTime(message.timestamp)}</span>
-                    </div>
-                `;
-            } else if (isCode) {
-                // Code message
-                messageDiv.innerHTML = `
-                    <div class="message-content">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-medium text-gray-600">${message.language || 'Code'}</span>
-                            <span class="text-xs font-medium text-gray-600">${message.sender || 'Unknown'}</span>
-                        </div>
-                        <div class="code-container relative">
-                            <button class="copy-button" title="Copy code">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                </svg>
-                                Copy
-                            </button>
-                            <div class="code-editor" data-language="${message.language || 'text'}" data-content="${encodeURIComponent(message.content || '')}"></div>
-                        </div>
-                    </div>
-                    <div class="message-meta">
-                        <span></span>
-                        <span>${formatTime(message.timestamp)}</span>
-                    </div>
-                `;
-            } else {
-                // Text message
-                messageDiv.innerHTML = `
-                    <div class="message-content">
-                        ${message.content ? message.content.replace(/\n/g, '<br>') : 'No content'}
-                    </div>
-                    <div class="message-meta">
-                        <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
-                        <span>${formatTime(message.timestamp)}</span>
-                    </div>
-                `;
-            }
-
-            messagesList.appendChild(messageDiv);
+      // Initialize CodeMirror for code messages
+      document.querySelectorAll('.code-editor').forEach((element) => {
+        const language = element.getAttribute('data-language');
+        const content = decodeURIComponent(element.getAttribute('data-content'));
+        
+        let mode;
+        switch (language) {
+          case 'python':
+            mode = 'python';
+            break;
+          case 'javascript':
+            mode = 'javascript';
+            break;
+          case 'html':
+            mode = 'htmlmixed';
+            break;
+          case 'css':
+            mode = 'css';
+            break;
+          default:
+            mode = 'text/plain';
+        }
+        
+        element.innerHTML = '';
+        CodeMirror(element, {
+          value: content,
+  mode: mode,
+  theme: 'dracula',
+  lineNumbers: true,
+  readOnly: true,
+  viewportMargin: Infinity,
+  autoRefresh: true,
+  matchBrackets: true,
+  lineWrapping: true,
+  scrollbarStyle: "simple"
         });
+      });
 
-        // Initialize CodeMirror for code messages
-        document.querySelectorAll('.code-editor').forEach((element) => {
-            const language = element.getAttribute('data-language');
-            const content = decodeURIComponent(element.getAttribute('data-content'));
-            
-            let mode;
-            switch (language) {
-                case 'python':
-                    mode = 'python';
-                    break;
-                case 'javascript':
-                    mode = 'javascript';
-                    break;
-                case 'html':
-                    mode = 'htmlmixed';
-                    break;
-                case 'css':
-                    mode = 'css';
-                    break;
-                default:
-                    mode = 'text/plain';
-            }
-            
-            element.innerHTML = '';
-            const editor = CodeMirror(element, {
-                value: content,
-                mode: mode,
-                theme: 'dracula',
-                lineNumbers: true,
-                readOnly: true,
-                viewportMargin: Infinity,
-                autoRefresh: true,
-                matchBrackets: true,
-                lineWrapping: true,
-                scrollbarStyle: "simple"
-            });
+      // Add copy functionality to code blocks
+      document.querySelectorAll('.copy-button').forEach(button => {
+        button.addEventListener('click', async function(e) {
+          e.stopPropagation();
+          const codeContainer = this.closest('.code-container');
+          const codeEditor = codeContainer.querySelector('.CodeMirror');
+          const code = codeEditor.CodeMirror.getValue();
+          
+          try {
+            await navigator.clipboard.writeText(code);
+            const originalHTML = this.innerHTML;
+            this.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Copied!
+            `;
             
             setTimeout(() => {
-                editor.setSize(null, 'auto');
-                const lineCount = editor.lineCount();
-                const lineHeight = 18;
-                const minHeight = 60;
-                const calculatedHeight = Math.max(minHeight, (lineCount * lineHeight) + 20);
-                editor.setSize(null, calculatedHeight);
-            }, 100);
+              this.innerHTML = originalHTML;
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy code:', err);
+          }
         });
+      });
 
-        // Add copy functionality to code blocks
-        document.querySelectorAll('.copy-button').forEach(button => {
-            button.addEventListener('click', async function(e) {
-                e.stopPropagation();
-                const codeContainer = this.closest('.code-container');
-                const codeEditor = codeContainer.querySelector('.CodeMirror');
-                const code = codeEditor.CodeMirror.getValue();
-                
-                try {
-                    await navigator.clipboard.writeText(code);
-                    const originalHTML = this.innerHTML;
-                    this.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Copied!
-                    `;
-                    
-                    setTimeout(() => {
-                        this.innerHTML = originalHTML;
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy code:', err);
-                }
-            });
-        });
-
-        if (forceScrollToBottom) {
-            setTimeout(scrollToBottom, 100);
-        }
+      if (forceScrollToBottom) {
+        setTimeout(scrollToBottom, 100);
+      }
     }
 
     function formatTime(timestamp) {
-        if (!timestamp) return '';
-        const date = new Date(timestamp);
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        
-        if (messageDate.getTime() === today.getTime()) {
-            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        } else {
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + 
-                   date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-        }
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      
+      if (messageDate.getTime() === today.getTime()) {
+        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      } else {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + 
+               date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+
+    function showError(message) {
+      messagesList.innerHTML = `
+        <div class="flex items-center justify-center h-32">
+          <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span>${message}</span>
+          </div>
+        </div>
+      `;
     }
 
     function startAutoRefresh() {
-        if (autoRefreshInterval) {
-            clearInterval(autoRefreshInterval);
-        }
-        
-        autoRefreshInterval = setInterval(() => {
-            fetchMessages();
-        }, POLLING_INTERVAL);
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
+      
+      autoRefreshInterval = setInterval(() => {
+        fetchMessages();
+      }, POLLING_INTERVAL);
     }
 
     function stopAutoRefresh() {
-        if (autoRefreshInterval) {
-            clearInterval(autoRefreshInterval);
-            autoRefreshInterval = null;
-        }
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+      }
     }
 
     function showNotification(message) {
-        notificationMessage.textContent = message;
-        notification.classList.remove('translate-y-20', 'opacity-0');
-        
-        setTimeout(() => {
-            notification.classList.add('translate-y-20', 'opacity-0');
-        }, 3000);
+      notificationMessage.textContent = message;
+      notification.classList.remove('translate-y-20', 'opacity-0');
+      
+      setTimeout(() => {
+        notification.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
     }
 
-    // Image modal functions
     function openImageModal(imageSrc) {
-        modalImage.src = imageSrc;
-        imageModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+      modalImage.src = imageSrc;
+      imageModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeImageModalFunc() {
-        imageModal.classList.remove('active');
-        document.body.style.overflow = 'auto';
+      imageModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
     }
 
     closeImageModal.addEventListener('click', closeImageModalFunc);
     imageModal.addEventListener('click', function(e) {
-        if (e.target === imageModal) {
-            closeImageModalFunc();
-        }
+      if (e.target === imageModal) {
+        closeImageModalFunc();
+      }
     });
 
-    // Event listeners for action buttons
     document.addEventListener('DOMContentLoaded', () => {
-        // Desktop action button event listeners
-        if (screenshotBtn) {
-            screenshotBtn.addEventListener('click', () => takeScreenshot(screenshotBtn));
-        }
-        
-        if (solutionBtn) {
-            solutionBtn.addEventListener('click', () => sendSolution(solutionBtn));
-        }
-        
-        if (extractTextBtn) {
-            extractTextBtn.addEventListener('click', () => extractText(extractTextBtn));
-        }
-        
-        if (audioBtn) {
-            audioBtn.addEventListener('click', () => listenAudio(audioBtn));
-        }
+      // Load saved user name
+      currentUser = localStorage.getItem('currentUser') || '';
 
-        // Mobile action button event listeners
-        if (mobileScreenshotBtn) {
-            mobileScreenshotBtn.addEventListener('click', () => takeScreenshot(mobileScreenshotBtn));
-        }
-        
-        if (mobileSolutionBtn) {
-            mobileSolutionBtn.addEventListener('click', () => sendSolution(mobileSolutionBtn));
-        }
-        
-        if (mobileExtractTextBtn) {
-            mobileExtractTextBtn.addEventListener('click', () => extractText(mobileExtractTextBtn));
-        }
-        
-        if (mobileAudioBtn) {
-            mobileAudioBtn.addEventListener('click', () => listenAudio(mobileAudioBtn));
-        }
-
-        // Auto-refresh interval change
-        if (autoRefreshIntervalSelect) {
-            autoRefreshIntervalSelect.addEventListener('change', () => {
-                POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
-                stopAutoRefresh();
-                startAutoRefresh();
-                showNotification(`Auto-refresh set to ${POLLING_INTERVAL / 1000} seconds`);
-            });
-        }
-        
-        // Filter messages
-        if (filterTypeSelect) {
-            filterTypeSelect.addEventListener('change', () => {
-                messageFilter = filterTypeSelect.value;
-                const filteredMessages = filterMessages(messages);
-                displayMessages(filteredMessages, true);
-            });
-        }
-
-        // Mobile sidebar toggle (if needed)
-        const toggleSidebar = document.getElementById('toggle-sidebar');
-        const sidebar = document.getElementById('sidebar');
-        
-        if (toggleSidebar && sidebar) {
-            toggleSidebar.addEventListener('click', () => {
-                sidebar.classList.toggle('hidden');
-            });
-        }
-
-        // Initial setup
-        fetchMessages();
+      // Initial fetch
+      fetchMessages();
+      startAutoRefresh();
+      
+      // Auto-refresh interval change
+      autoRefreshIntervalSelect.addEventListener('change', () => {
+        POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
+        stopAutoRefresh();
         startAutoRefresh();
-        
-        // Update status with API URL
-        if (statusDisplay) {
-            statusDisplay.innerHTML += `<p class="text-xs text-gray-500 mt-2">API: <code>${API_BASE_URL}</code></p>`;
-        }
+        showNotification(`Auto-refresh set to ${POLLING_INTERVAL / 1000} seconds`);
+      });
+      
+      // Filter messages
+      filterTypeSelect.addEventListener('change', () => {
+        messageFilter = filterTypeSelect.value;
+        const filteredMessages = filterMessages(messages);
+        displayMessages(filteredMessages, true);
+      });
+
+      // Mobile sidebar toggle
+      const toggleSidebar = document.getElementById('toggle-sidebar');
+      const sidebar = document.getElementById('sidebar');
+      
+      if (toggleSidebar && sidebar) {
+        toggleSidebar.addEventListener('click', () => {
+          sidebar.classList.toggle('hidden');
+        });
+      }
     });
   </script>
 </body>
