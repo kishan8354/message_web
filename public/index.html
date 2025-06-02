@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Display System</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
@@ -290,9 +289,8 @@
             overflow-y: auto;
         }
         
-        /* NEW: Style for text content */
         .text-content {
-            white-space: pre-wrap; /* Preserve line breaks */
+            white-space: pre-wrap;
             line-height: 1.5;
             font-size: 15px;
             color: var(--text-secondary);
@@ -409,7 +407,7 @@
         class MessageSystem {
             constructor() {
                 this.apiKey = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-                this.apiBaseUrl = window.location.origin + '/messages'; // Replace with your backend URL
+                this.apiBaseUrl = window.location.origin;
                 this.messages = [];
                 this.selectedMessage = null;
                 this.refreshInterval = null;
@@ -424,56 +422,76 @@
 
             async loadMessages() {
                 try {
-                    const response = await fetch(`${this.apiBaseUrl}/messages`, {
-                        headers: {
-                            'Authorization': `Bearer ${this.apiKey}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        this.messages = data.messages || [];
-                        this.renderMessages();
-                        this.updateStatus(`Loaded ${this.messages.length} messages`, 'success');
-                    } else {
-                        // Fallback to demo data if API fails
-                        this.loadDemoData();
-                        this.updateStatus('Using demo data - API unavailable', 'warning');
-                    }
+                    // Simulate API call with demo data including the messages from logs
+                    this.messages = await this.fetchMessagesFromAPI();
+                    this.renderMessages();
+                    this.updateStatus(`Loaded ${this.messages.length} messages`, 'success');
                 } catch (error) {
                     console.error('Failed to load messages:', error);
-                    this.loadDemoData();
                     this.updateStatus('Connection failed - Using demo data', 'error');
+                    this.messages = this.getDemoMessages();
+                    this.renderMessages();
                 }
             }
 
-            loadDemoData() {
-                this.messages = [
+            // Simulated API call with the messages from the logs
+            async fetchMessagesFromAPI() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve([
+                            {
+                                id: 1,
+                                sender: "PythonScript",
+                                email: "ai@python.org",
+                                subject: "Candy Distribution Solution",
+                                content: '🤖 AI Solution:\n\n```cpp\n#include <iostream>\n#include <vector>\n\nusing namespace std;\n\n/*\nApproach:\n\nWe perform two passes over the ratings array.\n\n1. First Pass (Left to Right): We assign at least one candy to each child. If a child has a higher rating than their left neighbor, they receive one more candy than their left neighbor.\n\n2. Second Pass (Right to Left): We iterate again. If a child has a higher rating than their right neighbor and their current candy count is not already greater than their right neighbor\'s, we update their candy count to be one more than their right neighbor\'s. This handles cases where a local minimum might have been unfairly penalized in the first pass.\n\nThis ensures that the constraints are met while minimizing the total number of candies.\n*/\n\nclass Solution {\npublic:\n    int candy(vector<int>& ratings) {\n        int n = ratings.size();\n        if (n == 0) return 0; //Handle empty input\n\n        vector<int> candies(n, 1); // Initialize each child with at least one candy\n\n        // First pass: Left to right\n        for (int i = 1; i < n; ++i) {\n            if (ratings[i] > ratings[i - 1]) {\n                candies[i] = candies[i - 1] + 1;\n            }\n        }\n\n        // Second pass: Right to left\n        for (int i = n - 2; i >= 0; --i) {\n            if (ratings[i] > ratings[i + 1] && candies[i] <= candies[i + 1]) {\n                candies[i] = candies[i + 1] + 1;\n            }\n        }\n\n        int totalCandies = 0;\n        for (int candyCount : candies) {\n            totalCandies += candyCount;\n        }\n\n        return totalCandies;\n    }\n};\n\nint main() {\n    Solution sol;\n\n    vector<int> ratings1 = {1, 0, 2};\n    cout << "Minimum candies for ratings " << "{";\n    for (int i = 0; i < ratings1.size(); ++i) {\n        cout << ratings1[i] << (i == ratings1.size() - 1 ? "" : ", ");\n    }\n    cout << "} : " << sol.candy(ratings1) << endl; // Output: 5\n\n\n    vector<int> ratings2 = {1,2,2};\n    cout << "Minimum candies for ratings " << "{";\n    for (int i = 0; i < ratings2.size(); ++i) {\n        cout << ratings2[i] << (i == ratings2.size() - 1 ? "" : ", ");\n    }\n    cout << "} : " << sol.candy(ratings2) << endl; // Output: 4\n\n    vector<int> ratings3 = {};\n    cout << "Minimum candies for ratings {} : " << sol.candy(ratings3) << endl; //Output 0\n\n    return 0;\n}\n```',
+                                timestamp: new Date('2025-06-02T16:01:54.205400').toISOString(),
+                                status: "unread",
+                                priority: "high",
+                                type: "code"
+                            },
+                            {
+                                id: 2,
+                                sender: "PythonScript",
+                                email: "ai@python.org",
+                                subject: "Extracted Text Content",
+                                content: '📝 Extracted Text:\n\nAPIMes X | G howpa X | w& messa @ Messag X | & LeetCo Cand J Grok\n\no-\n\n23 message-web-4.onrender.com\n\nS Refresh > Filter V Mark All Read «> Compose\n\nMessage Inbox (4) Message Content\n\nJohn Smith ee HIGH\n\nPython Script Update\n\n"Here\'s the updated Python script: [Code Block] This should...\n6/2/2025, 4:02:52 PM TEXT\n\nSarah Johnson\n\nC++ Algorithm Implementation\n\nGedkeuthis estinized eathgclgedineleata Ted P- Scheduled server maintenance will occur tonight from 10:00 PM to 2:00 AM.\n\n6/2/2025, 3:02:52 PM\nDuring this time, services may be temporarily unavailable.\n\nDevelopment Team e\n\nWe appreciate your understanding.\nMeeting Notes Ht of &\n\n"Here are the key points from today\'s meeting: « Project tim...\n\nSystem Status: Using demo data - API unavailable\n\n16:02\n02-06-2025\n\nENG\n\nZ~ ti\naN ® 0) @',
+                                timestamp: new Date('2025-06-02T16:02:58.000091').toISOString(),
+                                status: "unread",
+                                priority: "medium",
+                                type: "text"
+                            },
+                            {
+                                id: 3,
+                                sender: "John Smith",
+                                email: "john.smith@example.com",
+                                subject: "Python Script Update",
+                                content: `Here's the updated Python script:\n\n\`\`\`python\nimport requests\nimport json\n\ndef fetch_data(api_url):\n    response = requests.get(api_url)\n    if response.status_code == 200:\n        return response.json()\n    return None\n\ndata = fetch_data("https://api.example.com/data")\nprint(json.dumps(data, indent=2))\n\`\`\`\n\nThis should work better for our needs.`,
+                                timestamp: new Date().toISOString(),
+                                status: "unread",
+                                priority: "high",
+                                type: "code"
+                            },
+                            {
+                                id: 4,
+                                sender: "Sarah Johnson",
+                                email: "sarah.j@business.com",
+                                subject: "C++ Algorithm Implementation",
+                                content: `Check out this optimized sorting algorithm:\n\n\`\`\`cpp\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nvoid quickSort(std::vector<int>& arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}\n\nint main() {\n    std::vector<int> data = {64, 34, 25, 12, 22, 11, 90};\n    quickSort(data, 0, data.size() - 1);\n    return 0;\n}\n\`\`\`\n\nPerformance looks great!`,
+                                timestamp: new Date(Date.now() - 3600000).toISOString(),
+                                status: "read",
+                                priority: "medium",
+                                type: "code"
+                            }
+                        ]);
+                    }, 800); // Simulate network delay
+                });
+            }
+
+            getDemoMessages() {
+                return [
                     {
-                        id: 1,
-                        sender: "John Smith",
-                        email: "john.smith@example.com",
-                        subject: "Python Script Update",
-                        content: `Here's the updated Python script:\n\n\`\`\`python\nimport requests\nimport json\n\ndef fetch_data(api_url):\n    response = requests.get(api_url)\n    if response.status_code == 200:\n        return response.json()\n    return None\n\ndata = fetch_data("https://api.example.com/data")\nprint(json.dumps(data, indent=2))\n\`\`\`\n\nThis should work better for our needs.`,
-                        timestamp: new Date().toISOString(),
-                        status: "unread",
-                        priority: "high",
-                        type: "code"
-                    },
-                    {
-                        id: 2,
-                        sender: "Sarah Johnson",
-                        email: "sarah.j@business.com",
-                        subject: "C++ Algorithm Implementation",
-                        content: `Check out this optimized sorting algorithm:\n\n\`\`\`cpp\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nvoid quickSort(std::vector<int>& arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}\n\nint main() {\n    std::vector<int> data = {64, 34, 25, 12, 22, 11, 90};\n    quickSort(data, 0, data.size() - 1);\n    return 0;\n}\n\`\`\`\n\nPerformance looks great!`,
-                        timestamp: new Date(Date.now() - 3600000).toISOString(),
-                        status: "read",
-                        priority: "medium",
-                        type: "code"
-                    },
-                    {
-                        id: 3,
+                        id: 5,
                         sender: "Development Team",
                         email: "dev@company.com",
                         subject: "Meeting Notes",
@@ -484,7 +502,7 @@
                         type: "text"
                     },
                     {
-                        id: 4,
+                        id: 6,
                         sender: "System Alert",
                         email: "alerts@system.com",
                         subject: "Server Maintenance",
@@ -495,7 +513,6 @@
                         type: "text"
                     }
                 ];
-                this.renderMessages();
             }
 
             renderMessages() {
@@ -586,7 +603,6 @@
                 Prism.highlightAll();
             }
 
-            // UPDATED CONTENT PROCESSOR - handles both text and code properly
             processContent(content, messageType) {
                 // For text-only messages
                 if (messageType === 'text') {
@@ -648,14 +664,13 @@
             }
 
             async markMessageAsRead(messageId) {
+                // Simulated API call to mark message as read
                 try {
-                    await fetch(`${this.apiBaseUrl}/messages/${messageId}/read`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${this.apiKey}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
+                    const message = this.messages.find(m => m.id === messageId);
+                    if (message) {
+                        message.status = 'read';
+                        this.renderMessages();
+                    }
                 } catch (error) {
                     console.error('Failed to mark message as read:', error);
                 }
@@ -740,7 +755,6 @@
             messageSystem.messages.forEach(msg => {
                 if (msg.status === 'unread') {
                     msg.status = 'read';
-                    messageSystem.markMessageAsRead(msg.id);
                 }
             });
             messageSystem.renderMessages();
