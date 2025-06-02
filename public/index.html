@@ -425,7 +425,7 @@
         console.log('Loading messages...');
         try {
             const response = await this.getAPIMessages();
-            if (response && Array.isArray(response)) {
+            if (response ) {
                 this.messages = response;
                 console.log('Messages loaded:', this.messages);
                 this.renderMessages();
