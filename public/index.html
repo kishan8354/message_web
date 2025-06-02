@@ -1,1031 +1,725 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Message Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/theme/dracula.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/javascript/javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/htmlmixed/htmlmixed.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/mode/css/css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/display/autorefresh.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/closebrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/edit/matchbrackets.min.js"></script>
-  <style>
-    .CodeMirror {
-      height: auto !important;
-      min-height: 150px;
-      max-height: none;
-      font-size: 13px;
-      border-radius: 0.5rem;
-      overflow-y: auto;
-      border: 1px solid #e5e7eb;
-    }
-    
-    @media (max-width: 640px) {
-      .CodeMirror {
-        font-size: 11px;
-        min-height: 60px;
-        max-height: none;
-      }
-    }
-    
-    .message-bubble {
-      max-width: 85%;
-      word-wrap: break-word;
-      border-radius: 18px;
-      position: relative;
-      margin-bottom: 8px;
-    }
-    
-    .message-sent {
-      background: linear-gradient(135deg, #dcf8c6 0%, #d4f2b8 100%);
-      margin-left: auto;
-      border-bottom-right-radius: 4px;
-    }
-    
-    .message-received {
-      background: white;
-      margin-right: auto;
-      border-bottom-left-radius: 4px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-    
-    .message-code {
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      max-width: 95%;
-    }
-    
-    .message-image {
-      background: transparent;
-      padding: 4px;
-    }
-    
-    .message-content {
-      padding: 8px 12px;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    
-    .message-meta {
-      font-size: 11px;
-      color: #667781;
-      text-align: right;
-      padding: 2px 8px 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .message-image-container {
-      max-width: 280px;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    
-    .message-image-container:hover {
-      transform: scale(1.02);
-    }
-    
-    .message-image-preview {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 12px;
-    }
-    
-    @media (max-width: 768px) {
-      .message-bubble {
-        max-width: 92%;
-      }
-      
-      .message-content {
-        font-size: 14px;
-        padding: 10px 12px;
-      }
-      
-      .message-image-container {
-        max-width: 240px;
-      }
-      
-      .sidebar-desktop {
-        display: none;
-      }
-      
-      .mobile-input {
-        display: flex;
-      }
-    }
-    
-    @media (min-width: 769px) {
-      .mobile-input {
-        display: none;
-      }
-    }
-    
-    .copy-button {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      padding: 4px 8px;
-      background-color: rgba(99, 102, 241, 0.9);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      z-index: 10;
-      opacity: 0;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    
-    .code-container:hover .copy-button {
-      opacity: 1;
-    }
-    
-    .copy-button:hover {
-      background-color: rgba(79, 70, 229, 1);
-    }
-    
-    @keyframes fadeInUp {
-      from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0); 
-      }
-    }
-    
-    .new-message {
-      animation: fadeInUp 0.3s ease-out;
-    }
-    
-    @media (max-width: 768px) {
-      #screenshot-btn {
-        font-size: 12px;
-        padding: 8px 12px;
-      }
-    }
-    
-    .messages-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    .messages-scroll::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-    
-    .messages-scroll::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 10px;
-    }
-    
-    .messages-scroll::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-    
-    .input-area {
-      background: white;
-      border-top: 1px solid #e5e7eb;
-      padding: 12px;
-    }
-    
-    .input-container {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      max-width: 100%;
-    }
-    
-    .message-input {
-      flex: 1;
-      min-height: 40px;
-      max-height: 120px;
-      padding: 10px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 20px;
-      resize: none;
-      outline: none;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    
-    .message-input:focus {
-      border-color: #10b981;
-      box-shadow: 0 0 0 1px #10b981;
-    }
-    
-    .send-button {
-      width: 40px;
-      height: 40px;
-      background: #10b981;
-      border: none;
-      border-radius: 50%;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-    
-    .send-button:hover {
-      background: #059669;
-      transform: scale(1.05);
-    }
-    
-    .send-button:disabled {
-      background: #d1d5db;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    .file-input-container {
-      position: relative;
-    }
-    
-    .file-input {
-      position: absolute;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-    
-    .file-input-button {
-      width: 40px;
-      height: 40px;
-      background: #6b7280;
-      border: none;
-      border-radius: 50%;
-      color: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-    
-    .file-input-button:hover {
-      background: #4b5563;
-    }
-    
-    .image-preview {
-      max-width: 200px;
-      max-height: 200px;
-      border-radius: 8px;
-      margin: 8px 0;
-    }
-    
-    .image-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-    
-    .image-modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .image-modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 8px;
-    }
-    
-    .image-modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      font-size: 24px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      background: white;
-      border-radius: 18px;
-      margin: 8px 0;
-      max-width: 80px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-    
-    .typing-dots {
-      display: flex;
-      gap: 3px;
-    }
-    
-    .typing-dot {
-      width: 6px;
-      height: 6px;
-      background: #9ca3af;
-      border-radius: 50%;
-      animation: typing 1.4s infinite ease-in-out;
-    }
-    
-    .typing-dot:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-    
-    .typing-dot:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-    
-    @keyframes typing {
-      0%, 60%, 100% {
-        transform: scale(1);
-        opacity: 0.5;
-      }
-      30% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
-    }
-
-    .action-btn {
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      border: none;
-      text-align: center;
-      font-size: 14px;
-    }
-    
-    .action-btn:hover {
-      transform: translateY(-2px);
-    }
-    
-    .action-btn:active {
-      transform: translateY(0);
-    }
-    
-    .action-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    .action-btn i {
-      font-size: 16px;
-    }
-    
-    .screenshot-btn {
-      background: #3B82F6;
-      color: white;
-    }
-    
-    .solution-btn {
-      background: #10B981;
-      color: white;
-    }
-    
-    .text-btn {
-      background: #8B5CF6;
-      color: white;
-    }
-    
-    .audio-btn {
-      background: #EC4899;
-      color: white;
-    }
-    
-    .mobile-buttons-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      width: 100%;
-    }
-    
-    @media (max-width: 480px) {
-      .mobile-buttons-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</head>
-<body class="bg-gray-100 min-h-screen flex flex-col font-sans"> 
-  <!-- Header -->
-  <header class="bg-green-600 text-white py-3 sticky top-0 z-40 shadow-md">
-    <div class="container mx-auto px-4">
-      <div class="flex justify-between items-center">
-        <div class="flex items-center">
-          <h1 class="text-xl font-semibold">Messages</h1>
-          <span id="online-status" class="ml-3 text-xs bg-green-500 px-2 py-1 rounded-full">Online</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <button id="toggle-sidebar" class="md:hidden p-2 hover:bg-green-700 rounded">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <span id="message-count" class="text-xs bg-green-500 px-2 py-1 rounded-full">0</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="flex-1 flex overflow-hidden"> 
-    <!-- Sidebar (Desktop) -->
-     <div id="sidebar" class="sidebar-desktop w-80 bg-white border-r border-gray-200 flex flex-col"> 
-      <!-- Controls -->
-       <div class="p-4 border-b border-gray-200">
-        <h2 class="font-semibold text-gray-800 mb-3">Actions</h2>
-        <div class="space-y-3">
-          <button id="screenshot-btn" class="action-btn screenshot-btn w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Take Screenshot
-          </button>
-          
-          <button id="send-solution-btn" class="action-btn solution-btn w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Send Solution
-          </button>
-          
-          <button id="send-text-btn" class="action-btn text-btn w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Send Extracted Text
-          </button>
-          
-          <button id="listen-audio-btn" class="action-btn audio-btn w-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-            </svg>
-            Listen Audio
-          </button>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Auto-refresh</label>
-            <select id="auto-refresh-interval" class="block w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md">
-              <option value="5000">5 seconds</option>
-              <option value="10000" selected>10 seconds</option>
-              <option value="30000">30 seconds</option>
-              <option value="60000">1 minute</option>
-            </select>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Filter</label>
-            <select id="filter-type" class="block w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md">
-              <option value="all" selected>All messages</option>
-              <option value="text">Text only</option>
-              <option value="code">Code only</option>
-              <option value="image">Images only</option>
-            </select>
-          </div>
-        </div>
-      </div> 
-    </div> 
-
-    <!-- Messages Area -->
-    <div class="flex-1 flex flex-col bg-gray-50"> 
-      <!-- Messages Container -->
-       <div id="messages-container" class="flex-1 overflow-y-auto messages-scroll p-4" style="background-image: url('data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;40&quot; height=&quot;40&quot; viewBox=&quot;0 0 40 40&quot;><circle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;1&quot; fill=&quot;%23e5e7eb&quot; opacity=&quot;0.3&quot;/></svg>');">
-        <div id="messages-list" class="space-y-2">
-          <!-- Messages will be inserted here -->
-           <div class="flex justify-center items-center h-32 text-gray-400">
-            <div class="text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <p>Loading messages...</p>
-            </div>
-          </div>
-        </div>
-      </div> 
-
-      <!-- Mobile Buttons Area -->
-      <div class="mobile-input input-area">
-        <div class="mobile-buttons-grid">
-          <button id="mobile-screenshot-btn" class="action-btn screenshot-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            Screenshot
-          </button>
-          
-          <button id="mobile-send-solution-btn" class="action-btn solution-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Solution
-          </button>
-          
-          <button id="mobile-send-text-btn" class="action-btn text-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Text
-          </button>
-          
-          <button id="mobile-listen-audio-btn" class="action-btn audio-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-            </svg>
-            Audio
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Image Modal -->
-  <div id="image-modal" class="image-modal">
-    <button class="image-modal-close" id="close-image-modal">&times;</button>
-    <img id="modal-image" alt="Full size image">
-  </div> 
-
-  <!-- Notification -->
-   <div id="notification" class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-20 opacity-0 z-50">
-    <span id="notification-message">Notification message</span>
-  </div>
-
-  <script>
-    // API configuration
-
-    const API_URL = window.location.origin + '/messages'; 
-    const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD'; // Your actual backend    const API_KEY = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-    const ACTION_API_URL = 'http://172.18.11.231:5000/process-action';
-    
-    let autoRefreshInterval = null;
-    let POLLING_INTERVAL = 10000;
-    let lastRefreshTime = new Date();
-    let messageFilter = 'all';
-    let messages = [];
-    let knownMessageIds = new Set();
-    let isFirstLoad = true;
-    let currentUser = 'Mobile User';;
-
-    // DOM elements
-    const messagesContainer = document.getElementById('messages-container');
-    const messagesList = document.getElementById('messages-list');
-    const autoRefreshIntervalSelect = document.getElementById('auto-refresh-interval');
-    const filterTypeSelect = document.getElementById('filter-type');
-    const messageCountElement = document.getElementById('message-count');
-    const notification = document.getElementById('notification');
-    const notificationMessage = document.getElementById('notification-message');
-    const imageModal = document.getElementById('image-modal');
-    const modalImage = document.getElementById('modal-image');
-    const closeImageModal = document.getElementById('close-image-modal');
-
-    // Button elements
-    const screenshotBtn = document.getElementById('screenshot-btn');
-    const sendSolutionBtn = document.getElementById('send-solution-btn');
-    const sendTextBtn = document.getElementById('send-text-btn');
-    const listenAudioBtn = document.getElementById('listen-audio-btn');
-    const mobileScreenshotBtn = document.getElementById('mobile-screenshot-btn');
-    const mobileSendSolutionBtn = document.getElementById('mobile-send-solution-btn');
-    const mobileSendTextBtn = document.getElementById('mobile-send-text-btn');
-    const mobileListenAudioBtn = document.getElementById('mobile-listen-audio-btn');
-
-    // API call function
-    async function testConnection() {
-  try {
-    const response = await fetch('http://172.18.11.231:5000/test');
-    console.log('Connection test:', response.status);
-  } catch (error) {
-    console.error('Connection failed:', error);
-  }
-}
-// Call this function: testConnection();
-    async function callApi(endpoint, data = {}) {
-      try {
-        console.log('Calling API:', endpoint, data);  
-        showNotification(`Sending request to ${endpoint}...`);
-        
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY
-          },
-          body: JSON.stringify({
-            ...data,
-            timestamp: new Date().toISOString(),
-            sender: currentUser || 'System'
-          })
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`API request failed: ${response.status} - ${errorText}`);
-        }
-        
-        const result = await response.json();
-        showNotification('Action completed successfully!');
-        return result;
-      } catch (error) {
-        console.error('API Error:', error);
-        showNotification('Failed: ' + error.message);
-        return null;
-      }
-    }
-
-    // Screenshot function
-    async function takeScreenshot() {
-      return await callApi(ACTION_API_URL, { 
-        action: 'screenshot', 
-        capture_new: true 
-      });
-    }
-
-    // Send solution function
-    async function sendSolution() {
-      return await callApi(ACTION_API_URL, { 
-        action: 'solution', 
-        capture_new: true 
-      });
-    }
-
-    // Send extracted text function
-    async function sendExtractedText() {
-      return await callApi(ACTION_API_URL, { 
-        action: 'extract-text', 
-        capture_new: true 
-      });
-    }
-
-    // Listen audio function
-    async function listenAudio() {
-      return await callApi(ACTION_API_URL, { 
-        action: 'audio' 
-      });
-    }
-
-    // Button event listeners
-    screenshotBtn.addEventListener('click', takeScreenshot);
-    sendSolutionBtn.addEventListener('click', sendSolution);
-    sendTextBtn.addEventListener('click', sendExtractedText);
-    listenAudioBtn.addEventListener('click', listenAudio);
-    
-    mobileScreenshotBtn.addEventListener('click', takeScreenshot);
-    mobileSendSolutionBtn.addEventListener('click', sendSolution);
-    mobileSendTextBtn.addEventListener('click', sendExtractedText);
-    mobileListenAudioBtn.addEventListener('click', listenAudio);
-
-    // Fetch messages function
-    async function fetchMessages() {
-      try {
-        const response = await fetch(API_URL, {
-          headers: {
-            'x-api-key': API_KEY
-          }
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch messages');
-        
-        const newMessages = await response.json();
-        const wasEmpty = messages.length === 0;
-        const shouldScrollToBottom = isScrolledToBottom();
-        
-        const hasNewMessages = newMessages.some(msg => {
-          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
-          return !knownMessageIds.has(msgId);
-        });
-        
-        messages = Array.isArray(newMessages) ? newMessages : [];
-        
-        messages.forEach(msg => {
-          const msgId = `${msg.timestamp}-${(msg.content || msg.image || '').substring(0, 20)}`;
-          knownMessageIds.add(msgId);
-        });
-        
-        lastRefreshTime = new Date();
-        
-        const filteredMessages = filterMessages(messages);
-        displayMessages(filteredMessages, wasEmpty || hasNewMessages || isFirstLoad);
-        isFirstLoad = false;
-        
-        messageCountElement.textContent = messages.length;
-        
-        if (hasNewMessages && shouldScrollToBottom) {
-          scrollToBottom();
-        }
-        
-        return true;
-      } catch (error) {
-        console.error('Error fetching messages:', error);
-        showError('Failed to load messages. Please try again.');
-        return false;
-      }
-    }
-
-    function isScrolledToBottom() {
-      return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
-    }
-
-    function scrollToBottom() {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function filterMessages(allMessages) {
-      if (messageFilter === 'all') return allMessages;
-      return allMessages.filter(message => message.type === messageFilter);
-    }
-
-    function displayMessages(messagesToDisplay, forceScrollToBottom) {
-      if (messagesToDisplay.length === 0) {
-        messagesList.innerHTML = `
-          <div class="flex flex-col items-center justify-center h-32 text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <p>No messages found</p>
-          </div>
-        `;
-        return;
-      }
-
-      messagesList.innerHTML = '';
-
-      messagesToDisplay.forEach((message, index) => {
-        const messageDiv = document.createElement('div');
-        const isCurrentUser = message.sender === currentUser;
-        const isCode = message.type === 'code';
-        const isImage = message.type === 'image';
-        
-        messageDiv.className = `message-bubble new-message ${
-          isCurrentUser ? 'message-sent' : 'message-received'
-        } ${isCode ? 'message-code' : ''} ${isImage ? 'message-image' : ''}`;
-
-        if (isImage && message.image) {
-          // Image message
-          messageDiv.innerHTML = `
-            <div class="message-image-container" onclick="openImageModal('${message.image}')">
-              <img src="${message.image}" alt="Shared image" class="message-image-preview" loading="lazy">
-            </div>
-            ${message.content ? `<div class="message-content">${message.content.replace(/\n/g, '<br>')}</div>` : ''}
-            <div class="message-meta">
-              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
-              <span>${formatTime(message.timestamp)}</span>
-            </div>
-          `;
-        } else if (isCode) {
-          // Code message
-          messageDiv.innerHTML = `
-            <div class="message-content">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-medium text-gray-600">${message.language || 'Code'}</span>
-                <span class="text-xs font-medium text-gray-600">${message.sender || 'Unknown'}</span>
-              </div>
-              <div class="code-container relative">
-                <button class="copy-button" title="Copy code">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                  </svg>
-                  Copy
-                </button>
-                <div class="code-editor" data-language="${message.language || 'text'}" data-content="${encodeURIComponent(message.content || '')}"></div>
-              </div>
-            </div>
-            <div class="message-meta">
-              <span></span>
-              <span>${formatTime(message.timestamp)}</span>
-            </div>
-          `;
-        } else {
-          // Text message
-          messageDiv.innerHTML = `
-            <div class="message-content">
-              ${message.content ? message.content.replace(/\n/g, '<br>') : 'No content'}
-            </div>
-            <div class="message-meta">
-              <span class="font-medium text-xs">${message.sender || 'Unknown'}</span>
-              <span>${formatTime(message.timestamp)}</span>
-            </div>
-          `;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Display System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        messagesList.appendChild(messageDiv);
-      });
-
-      // Initialize CodeMirror for code messages
-      document.querySelectorAll('.code-editor').forEach((element) => {
-        const language = element.getAttribute('data-language');
-        const content = decodeURIComponent(element.getAttribute('data-content'));
-        
-        let mode;
-        switch (language) {
-          case 'python':
-            mode = 'python';
-            break;
-          case 'javascript':
-            mode = 'javascript';
-            break;
-          case 'html':
-            mode = 'htmlmixed';
-            break;
-          case 'css':
-            mode = 'css';
-            break;
-          default:
-            mode = 'text/plain';
+        :root {
+            --bg-primary: #0f1929;
+            --bg-secondary: #192845;
+            --bg-panel: #1a2b41;
+            --accent: #4696dc;
+            --text-primary: #dcf0ff;
+            --text-secondary: #b4c8e6;
+            --success: #32c878;
+            --warning: #ffb43c;
+            --error: #ff6464;
+            --border: #233759;
+            --hover: #5aaafd;
         }
-        
-        element.innerHTML = '';
-        CodeMirror(element, {
-          value: content,
-          mode: mode,
-          theme: 'dracula',
-          lineNumbers: true,
-          readOnly: true,
-          viewportMargin: Infinity,
-          autoRefresh: true,
-          matchBrackets: true,
-          lineWrapping: true,
-          scrollbarStyle: "simple"
-        });
-      });
 
-      // Add copy functionality to code blocks
-      document.querySelectorAll('.copy-button').forEach(button => {
-        button.addEventListener('click', async function(e) {
-          e.stopPropagation();
-          const codeContainer = this.closest('.code-container');
-          const codeEditor = codeContainer.querySelector('.CodeMirror');
-          const code = codeEditor.CodeMirror.getValue();
-          
-          try {
-            await navigator.clipboard.writeText(code);
-            const originalHTML = this.innerHTML;
-            this.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              Copied!
-            `;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-panel);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 8px 32px rgba(70, 150, 220, 0.1);
+        }
+
+        .header h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            text-align: center;
+            background: linear-gradient(45deg, var(--accent), var(--hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid var(--accent);
+        }
+
+        .btn:hover {
+            background: var(--hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(70, 150, 220, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .message-list {
+            background: var(--bg-panel);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-content {
+            background: var(--bg-panel);
+            border-radius: 16px;
+            border: 2px solid var(--accent);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: var(--accent);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--bg-secondary);
+        }
+
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .message-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .message-item:hover {
+            background: rgba(70, 150, 220, 0.1);
+        }
+
+        .message-item.selected {
+            background: rgba(70, 150, 220, 0.2);
+            border-left: 4px solid var(--accent);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .message-subject {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .message-preview {
+            font-size: 13px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-read { background: var(--success); }
+        .status-unread { background: var(--warning); }
+        .priority-high { background: var(--warning); }
+        .priority-critical { background: var(--error); }
+        .priority-medium { background: var(--success); }
+
+        .content-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .content-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content-field {
+            margin-bottom: 15px;
+        }
+
+        .content-label {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .content-value {
+            color: var(--text-secondary);
+        }
+
+        .message-body {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-header {
+            background: var(--bg-secondary);
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        pre {
+            margin: 0 !important;
+            border-radius: 0 0 8px 8px !important;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .status-bar {
+            background: var(--bg-panel);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .status-text {
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        .error {
+            color: var(--error);
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
             
-            setTimeout(() => {
-              this.innerHTML = originalHTML;
-            }, 2000);
-          } catch (err) {
-            console.error('Failed to copy code:', err);
-          }
-        });
-      });
-
-      if (forceScrollToBottom) {
-        setTimeout(scrollToBottom, 100);
-      }
-    }
-
-    function formatTime(timestamp) {
-      if (!timestamp) return '';
-      const date = new Date(timestamp);
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-      
-      if (messageDate.getTime() === today.getTime()) {
-        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      } else {
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + 
-               date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      }
-    }
-
-    function showError(message) {
-      messagesList.innerHTML = `
-        <div class="flex items-center justify-center h-32">
-          <div class="bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-            </svg>
-            <span>${message}</span>
-          </div>
+            .controls {
+                justify-content: stretch;
+            }
+            
+            .btn {
+                flex: 1;
+                min-width: 120px;
+            }
+            
+            .message-content {
+                margin-top: 20px;
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Message Display System</h1>
+            <div class="controls">
+                <button class="btn" onclick="refreshMessages()">🔄 Refresh</button>
+                <button class="btn" onclick="toggleFilter()">🔍 Filter</button>
+                <button class="btn" onclick="markAllRead()">✓ Mark All Read</button>
+                <button class="btn" onclick="composeMessage()">✏️ Compose</button>
+            </div>
         </div>
-      `;
-    }
 
-    function startAutoRefresh() {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-      }
-      
-      autoRefreshInterval = setInterval(() => {
-        fetchMessages();
-      }, POLLING_INTERVAL);
-    }
+        <div class="main-content">
+            <div class="message-list">
+                <div class="panel-header">Message Inbox (<span id="message-count">0</span>)</div>
+                <div class="messages-container" id="messagesList">
+                    <div class="loading">Loading messages...</div>
+                </div>
+            </div>
 
-    function stopAutoRefresh() {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-      }
-    }
+            <div class="message-content">
+                <div class="panel-header">Message Content</div>
+                <div class="content-container" id="messageContent">
+                    <div class="placeholder">
+                        Select a message to view its content
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    function showNotification(message) {
-      notificationMessage.textContent = message;
-      notification.classList.remove('translate-y-20', 'opacity-0');
-      
-      setTimeout(() => {
-        notification.classList.add('translate-y-20', 'opacity-0');
-      }, 3000);
-    }
+        <div class="status-bar">
+            <div class="status-text" id="statusText">System Status: Connecting to backend...</div>
+            <div class="status-indicator" id="statusIndicator"></div>
+        </div>
+    </div>
 
-    function openImageModal(imageSrc) {
-      modalImage.src = imageSrc;
-      imageModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+    <script>
+        class MessageSystem {
+            constructor() {
+                this.apiKey = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
+                this.apiBaseUrl = window.location.origin; // Replace with your backend URL
+                this.messages = [];
+                this.selectedMessage = null;
+                this.refreshInterval = null;
+                this.init();
+            }
 
-    function closeImageModalFunc() {
-      imageModal.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
+            async init() {
+                await this.loadMessages();
+                this.startAutoRefresh();
+                this.updateStatus('All services operational', 'success');
+            }
 
-    closeImageModal.addEventListener('click', closeImageModalFunc);
-    imageModal.addEventListener('click', function(e) {
-      if (e.target === imageModal) {
-        closeImageModalFunc();
-      }
-    });
+            async loadMessages() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/messages`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.apiKey}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // Load saved user name
-      // currentUser = localStorage.getItem('currentUser') || '';
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.messages = data.messages || [];
+                        this.renderMessages();
+                        this.updateStatus(`Loaded ${this.messages.length} messages`, 'success');
+                    } else {
+                        // Fallback to demo data if API fails
+                        this.loadDemoData();
+                        this.updateStatus('Using demo data - API unavailable', 'warning');
+                    }
+                } catch (error) {
+                    console.error('Failed to load messages:', error);
+                    this.loadDemoData();
+                    this.updateStatus('Connection failed - Using demo data', 'error');
+                }
+            }
 
-      // Initial fetch
-      fetchMessages();
-      startAutoRefresh();
-      
-      // Auto-refresh interval change
-      autoRefreshIntervalSelect.addEventListener('change', () => {
-        POLLING_INTERVAL = parseInt(autoRefreshIntervalSelect.value);
-        stopAutoRefresh();
-        startAutoRefresh();
-        showNotification(`Auto-refresh set to ${POLLING_INTERVAL / 1000} seconds`);
-      });
-      
-      // Filter messages
-      filterTypeSelect.addEventListener('change', () => {
-        messageFilter = filterTypeSelect.value;
-        const filteredMessages = filterMessages(messages);
-        displayMessages(filteredMessages, true);
-      });
+            loadDemoData() {
+                this.messages = [
+                    {
+                        id: 1,
+                        sender: "John Smith",
+                        email: "john.smith@example.com",
+                        subject: "Python Script Update",
+                        content: `Here's the updated Python script:\n\n\`\`\`python\nimport requests\nimport json\n\ndef fetch_data(api_url):\n    response = requests.get(api_url)\n    if response.status_code == 200:\n        return response.json()\n    return None\n\ndata = fetch_data("https://api.example.com/data")\nprint(json.dumps(data, indent=2))\n\`\`\`\n\nThis should work better for our needs.`,
+                        timestamp: new Date().toISOString(),
+                        status: "unread",
+                        priority: "high",
+                        type: "code"
+                    },
+                    {
+                        id: 2,
+                        sender: "Sarah Johnson",
+                        email: "sarah.j@business.com",
+                        subject: "C++ Algorithm Implementation",
+                        content: `Check out this optimized sorting algorithm:\n\n\`\`\`cpp\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nvoid quickSort(std::vector<int>& arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}\n\nint main() {\n    std::vector<int> data = {64, 34, 25, 12, 22, 11, 90};\n    quickSort(data, 0, data.size() - 1);\n    return 0;\n}\n\`\`\`\n\nPerformance looks great!`,
+                        timestamp: new Date(Date.now() - 3600000).toISOString(),
+                        status: "read",
+                        priority: "medium",
+                        type: "code"
+                    },
+                    {
+                        id: 3,
+                        sender: "Development Team",
+                        email: "dev@company.com",
+                        subject: "Meeting Notes",
+                        content: "Here are the key points from today's meeting:\n\n• Project timeline updated\n• New features approved\n• Budget allocation confirmed\n• Next review scheduled for Friday\n\nPlease review and let me know if anything is missing.",
+                        timestamp: new Date(Date.now() - 7200000).toISOString(),
+                        status: "unread",
+                        priority: "medium",
+                        type: "text"
+                    }
+                ];
+                this.renderMessages();
+            }
 
-      // Mobile sidebar toggle
-      const toggleSidebar = document.getElementById('toggle-sidebar');
-      const sidebar = document.getElementById('sidebar');
-      
-      if (toggleSidebar && sidebar) {
-        toggleSidebar.addEventListener('click', () => {
-          sidebar.classList.toggle('hidden');
-        });
-      }
-    });
-  </script>
+            renderMessages() {
+                const container = document.getElementById('messagesList');
+                const countElement = document.getElementById('message-count');
+                
+                countElement.textContent = this.messages.length;
+
+                if (this.messages.length === 0) {
+                    container.innerHTML = '<div class="loading">No messages found</div>';
+                    return;
+                }
+
+                // Sort messages by timestamp (newest first)
+                const sortedMessages = [...this.messages].sort((a, b) => 
+                    new Date(b.timestamp) - new Date(a.timestamp)
+                );
+
+                container.innerHTML = sortedMessages.map(message => `
+                    <div class="message-item ${this.selectedMessage?.id === message.id ? 'selected' : ''}" 
+                         onclick="messageSystem.selectMessage(${message.id})">
+                        <div class="message-header">
+                            <div class="message-sender">${this.escapeHtml(message.sender)}</div>
+                            <div class="status-indicators">
+                                <div class="status-dot status-${message.status}"></div>
+                                <div class="status-dot priority-${message.priority}"></div>
+                            </div>
+                        </div>
+                        <div class="message-subject">${this.escapeHtml(message.subject)}</div>
+                        <div class="message-preview">${this.getPreview(message.content)}</div>
+                        <div class="message-time">${this.formatTime(message.timestamp)}</div>
+                    </div>
+                `).join('');
+            }
+
+            selectMessage(messageId) {
+                this.selectedMessage = this.messages.find(msg => msg.id === messageId);
+                this.renderMessages(); // Re-render to update selection
+                this.renderMessageContent();
+                
+                // Mark as read
+                if (this.selectedMessage.status === 'unread') {
+                    this.selectedMessage.status = 'read';
+                    this.markMessageAsRead(messageId);
+                }
+            }
+
+            renderMessageContent() {
+                const container = document.getElementById('messageContent');
+                
+                if (!this.selectedMessage) {
+                    container.innerHTML = '<div class="placeholder">Select a message to view its content</div>';
+                    return;
+                }
+
+                const msg = this.selectedMessage;
+                const processedContent = this.processContent(msg.content);
+
+                container.innerHTML = `
+                    <div class="content-header">
+                        <div class="content-field">
+                            <div class="content-label">From:</div>
+                            <div class="content-value">${this.escapeHtml(msg.sender)} &lt;${this.escapeHtml(msg.email)}&gt;</div>
+                        </div>
+                        <div class="content-field">
+                            <div class="content-label">Subject:</div>
+                            <div class="content-value">${this.escapeHtml(msg.subject)}</div>
+                        </div>
+                        <div class="content-field">
+                            <div class="content-label">Received:</div>
+                            <div class="content-value">${this.formatTime(msg.timestamp)}</div>
+                        </div>
+                        <div class="content-field">
+                            <div class="content-label">Priority:</div>
+                            <div class="content-value" style="color: ${this.getPriorityColor(msg.priority)}">${msg.priority.toUpperCase()}</div>
+                        </div>
+                    </div>
+                    <div class="message-body">
+                        ${processedContent}
+                    </div>
+                `;
+
+                // Highlight code after rendering
+                Prism.highlightAll();
+            }
+
+            processContent(content) {
+                // Check if content contains code blocks
+                const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+                let match;
+                let processedContent = this.escapeHtml(content);
+
+                while ((match = codeBlockRegex.exec(content)) !== null) {
+                    const language = match[1] || 'text';
+                    const code = match[2];
+                    const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
+                    
+                    const codeBlock = `
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span>${language.toUpperCase()} Code</span>
+                                <button class="copy-btn" onclick="messageSystem.copyCode('${codeId}')">Copy</button>
+                            </div>
+                            <pre id="${codeId}"><code class="language-${language}">${this.escapeHtml(code)}</code></pre>
+                        </div>
+                    `;
+                    
+                    processedContent = processedContent.replace(this.escapeHtml(match[0]), codeBlock);
+                }
+
+                // Convert newlines to <br> for text content
+                processedContent = processedContent.replace(/\n/g, '<br>');
+                
+                return processedContent;
+            }
+
+            copyCode(codeId) {
+                const codeElement = document.getElementById(codeId);
+                const code = codeElement.textContent;
+                
+                navigator.clipboard.writeText(code).then(() => {
+                    this.showNotification('Code copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy code:', err);
+                });
+            }
+
+            async markMessageAsRead(messageId) {
+                try {
+                    await fetch(`${this.apiBaseUrl}/messages/${messageId}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiKey}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                } catch (error) {
+                    console.error('Failed to mark message as read:', error);
+                }
+            }
+
+            startAutoRefresh() {
+                this.refreshInterval = setInterval(() => {
+                    this.loadMessages();
+                }, 30000); // Refresh every 30 seconds
+            }
+
+            stopAutoRefresh() {
+                if (this.refreshInterval) {
+                    clearInterval(this.refreshInterval);
+                }
+            }
+
+            updateStatus(message, type) {
+                const statusText = document.getElementById('statusText');
+                const statusIndicator = document.getElementById('statusIndicator');
+                
+                statusText.textContent = `System Status: ${message}`;
+                statusIndicator.className = `status-indicator ${type}`;
+            }
+
+            getPriorityColor(priority) {
+                switch(priority) {
+                    case 'high': return 'var(--warning)';
+                    case 'critical': return 'var(--error)';
+                    default: return 'var(--success)';
+                }
+            }
+
+            formatTime(timestamp) {
+                return new Date(timestamp).toLocaleString();
+            }
+
+            getPreview(content) {
+                const text = content.replace(/```[\s\S]*?```/g, '[Code Block]');
+                return text.substring(0, 100) + (text.length > 100 ? '...' : '');
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            showNotification(message) {
+                // Simple notification - can be enhanced
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--success);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 8px;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        }
+
+        // Global functions for button actions
+        function refreshMessages() {
+            messageSystem.loadMessages();
+        }
+
+        function toggleFilter() {
+            messageSystem.showNotification('Filter feature coming soon!');
+        }
+
+        function markAllRead() {
+            messageSystem.messages.forEach(msg => {
+                if (msg.status === 'unread') {
+                    msg.status = 'read';
+                    messageSystem.markMessageAsRead(msg.id);
+                }
+            });
+            messageSystem.renderMessages();
+            messageSystem.showNotification('All messages marked as read');
+        }
+
+        function composeMessage() {
+            messageSystem.showNotification('Compose feature coming soon!');
+        }
+
+        // Initialize the system
+        const messageSystem = new MessageSystem();
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
