@@ -289,6 +289,14 @@
             max-height: 400px;
             overflow-y: auto;
         }
+        
+        /* NEW: Style for text content */
+        .text-content {
+            white-space: pre-wrap; /* Preserve line breaks */
+            line-height: 1.5;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
 
         .placeholder {
             display: flex;
@@ -474,6 +482,17 @@
                         status: "unread",
                         priority: "medium",
                         type: "text"
+                    },
+                    {
+                        id: 4,
+                        sender: "System Alert",
+                        email: "alerts@system.com",
+                        subject: "Server Maintenance",
+                        content: "Scheduled server maintenance will occur tonight from 10:00 PM to 2:00 AM.\n\nDuring this time, services may be temporarily unavailable.\n\nWe appreciate your understanding.",
+                        timestamp: new Date(Date.now() - 86400000).toISOString(),
+                        status: "unread",
+                        priority: "high",
+                        type: "text"
                     }
                 ];
                 this.renderMessages();
@@ -533,7 +552,7 @@
                 }
 
                 const msg = this.selectedMessage;
-                const processedContent = this.processContent(msg.content);
+                const processedContent = this.processContent(msg.content, msg.type);
 
                 container.innerHTML = `
                     <div class="content-header">
@@ -553,6 +572,10 @@
                             <div class="content-label">Priority:</div>
                             <div class="content-value" style="color: ${this.getPriorityColor(msg.priority)}">${msg.priority.toUpperCase()}</div>
                         </div>
+                        <div class="content-field">
+                            <div class="content-label">Type:</div>
+                            <div class="content-value">${msg.type.toUpperCase()}</div>
+                        </div>
                     </div>
                     <div class="message-body">
                         ${processedContent}
@@ -563,18 +586,34 @@
                 Prism.highlightAll();
             }
 
-            processContent(content) {
-                // Check if content contains code blocks
+            // UPDATED CONTENT PROCESSOR - handles both text and code properly
+            processContent(content, messageType) {
+                // For text-only messages
+                if (messageType === 'text') {
+                    const escapedContent = this.escapeHtml(content);
+                    return `<div class="text-content">${escapedContent.replace(/\n/g, '<br>')}</div>`;
+                }
+                
+                // For messages with code blocks
                 const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+                let processedContent = '';
+                let lastIndex = 0;
                 let match;
-                let processedContent = this.escapeHtml(content);
 
                 while ((match = codeBlockRegex.exec(content)) !== null) {
+                    // Add text before the code block
+                    if (match.index > lastIndex) {
+                        const textSegment = content.substring(lastIndex, match.index);
+                        const escapedText = this.escapeHtml(textSegment);
+                        processedContent += `<div class="text-content">${escapedText.replace(/\n/g, '<br>')}</div>`;
+                    }
+                    
+                    // Process the code block
                     const language = match[1] || 'text';
                     const code = match[2];
                     const codeId = 'code_' + Math.random().toString(36).substr(2, 9);
                     
-                    const codeBlock = `
+                    processedContent += `
                         <div class="code-container">
                             <div class="code-header">
                                 <span>${language.toUpperCase()} Code</span>
@@ -584,12 +623,16 @@
                         </div>
                     `;
                     
-                    processedContent = processedContent.replace(this.escapeHtml(match[0]), codeBlock);
+                    lastIndex = codeBlockRegex.lastIndex;
                 }
 
-                // Convert newlines to <br> for text content
-                processedContent = processedContent.replace(/\n/g, '<br>');
-                
+                // Add any remaining text after the last code block
+                if (lastIndex < content.length) {
+                    const remainingText = content.substring(lastIndex);
+                    const escapedText = this.escapeHtml(remainingText);
+                    processedContent += `<div class="text-content">${escapedText.replace(/\n/g, '<br>')}</div>`;
+                }
+
                 return processedContent;
             }
 
