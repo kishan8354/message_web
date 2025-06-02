@@ -406,170 +406,126 @@
     <script>
         class MessageSystem {
             constructor() {
-                this.apiKey = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
-                this.apiBaseUrl = window.location.origin + '/messages';
-                this.messages = [];
-                this.selectedMessage = null;
-                this.refreshInterval = null;
-                this.init();
-            }
+        this.apiKey = 'X7kP9mW3qT2rY8nF4vJ6hL5zB1cD';
+        this.apiBaseUrl = window.location.origin + '/messages';
+        this.messages = [];
+        this.selectedMessage = null;
+        this.refreshInterval = null;
+        this.init();
+    }
 
-            async init() {
-                console.log('Initializing message system...');
-                await this.loadMessages();
-                this.startAutoRefresh();
-                this.updateStatus('All services operational', 'success');
-            }
+    async init() {
+        console.log('Initializing message system...');
+        await this.loadMessages();
+        this.startAutoRefresh();
+        this.updateStatus('All services operational', 'success');
+    }
 
-            async loadMessages() {
-                console.log('Loading messages...');
-                // Direct load from API without try-catch fallback
-                this.messages = this.getAPIMessages();
+    async loadMessages() {
+        console.log('Loading messages...');
+        try {
+            const response = await this.getAPIMessages();
+            if (response && Array.isArray(response)) {
+                this.messages = response;
                 console.log('Messages loaded:', this.messages);
                 this.renderMessages();
                 this.updateStatus(`Loaded ${this.messages.length} messages`, 'success');
+            } else {
+                throw new Error('Invalid API response format');
+            }
+        } catch (error) {
+            console.error('Failed to load messages:', error);
+            this.messages = [];
+            this.renderMessages();
+            this.updateStatus('Failed to load messages from API', 'error');
+        }
+    }
+
+    async getAPIMessages() {
+        try {
+            const response = await fetch(this.apiBaseUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`, // Adjust based on backend requirements
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`API request failed: ${response.status} ${response.statusText}`);
             }
 
-            // Direct API messages without Promise wrapper
-            getAPIMessages() {
-                return [
-                    {
-                        id: 1,
-                        sender: "PythonScript",
-                        email: "ai@python.org",
-                        subject: "Candy Distribution Solution",
-                        content: '🤖 AI Solution:\n\n```cpp\n#include <iostream>\n#include <vector>\n\nusing namespace std;\n\n/*\nApproach:\n\nWe perform two passes over the ratings array.\n\n1. First Pass (Left to Right): We assign at least one candy to each child. If a child has a higher rating than their left neighbor, they receive one more candy than their left neighbor.\n\n2. Second Pass (Right to Left): We iterate again. If a child has a higher rating than their right neighbor and their current candy count is not already greater than their right neighbor\'s, we update their candy count to be one more than their right neighbor\'s. This handles cases where a local minimum might have been unfairly penalized in the first pass.\n\nThis ensures that the constraints are met while minimizing the total number of candies.\n*/\n\nclass Solution {\npublic:\n    int candy(vector<int>& ratings) {\n        int n = ratings.size();\n        if (n == 0) return 0; //Handle empty input\n\n        vector<int> candies(n, 1); // Initialize each child with at least one candy\n\n        // First pass: Left to right\n        for (int i = 1; i < n; ++i) {\n            if (ratings[i] > ratings[i - 1]) {\n                candies[i] = candies[i - 1] + 1;\n            }\n        }\n\n        // Second pass: Right to left\n        for (int i = n - 2; i >= 0; --i) {\n            if (ratings[i] > ratings[i + 1] && candies[i] <= candies[i + 1]) {\n                candies[i] = candies[i + 1] + 1;\n            }\n        }\n\n        int totalCandies = 0;\n        for (int candyCount : candies) {\n            totalCandies += candyCount;\n        }\n\n        return totalCandies;\n    }\n};\n\nint main() {\n    Solution sol;\n\n    vector<int> ratings1 = {1, 0, 2};\n    cout << "Minimum candies for ratings " << "{";\n    for (int i = 0; i < ratings1.size(); ++i) {\n        cout << ratings1[i] << (i == ratings1.size() - 1 ? "" : ", ");\n    }\n    cout << "} : " << sol.candy(ratings1) << endl; // Output: 5\n\n\n    vector<int> ratings2 = {1,2,2};\n    cout << "Minimum candies for ratings " << "{";\n    for (int i = 0; i < ratings2.size(); ++i) {\n        cout << ratings2[i] << (i == ratings2.size() - 1 ? "" : ", ");\n    }\n    cout << "} : " << sol.candy(ratings2) << endl; // Output: 4\n\n    vector<int> ratings3 = {};\n    cout << "Minimum candies for ratings {} : " << sol.candy(ratings3) << endl; //Output 0\n\n    return 0;\n}\n```',
-                        timestamp: new Date('2025-06-02T16:01:54.205400').toISOString(),
-                        status: "unread",
-                        priority: "high",
-                        type: "code"
-                    },
-                    {
-                        id: 2,
-                        sender: "PythonScript",
-                        email: "ai@python.org",
-                        subject: "Extracted Text Content",
-                        content: '📝 Extracted Text:\n\nAPIMes X | G howpa X | w& messa @ Messag X | & LeetCo Cand J Grok\n\no-\n\n23 message-web-4.onrender.com\n\nS Refresh > Filter V Mark All Read «> Compose\n\nMessage Inbox (4) Message Content\n\nJohn Smith ee HIGH\n\nPython Script Update\n\n"Here\'s the updated Python script: [Code Block] This should...\n6/2/2025, 4:02:52 PM TEXT\n\nSarah Johnson\n\nC++ Algorithm Implementation\n\nGedkeuthis estinized eathgclgedineleata Ted P- Scheduled server maintenance will occur tonight from 10:00 PM to 2:00 AM.\n\n6/2/2025, 3:02:52 PM\nDuring this time, services may be temporarily unavailable.\n\nDevelopment Team e\n\nWe appreciate your understanding.\nMeeting Notes Ht of &\n\n"Here are the key points from today\'s meeting: « Project tim...\n\nSystem Status: Using demo data - API unavailable\n\n16:02\n02-06-2025\n\nENG\n\nZ~ ti\naN ® 0) @',
-                        timestamp: new Date('2025-06-02T16:02:58.000091').toISOString(),
-                        status: "unread",
-                        priority: "medium",
-                        type: "text"
-                    },
-                    {
-                        id: 3,
-                        sender: "John Smith",
-                        email: "john.smith@example.com",
-                        subject: "Python Script Update",
-                        content: `Here's the updated Python script:\n\n\`\`\`python\nimport requests\nimport json\n\ndef fetch_data(api_url):\n    response = requests.get(api_url)\n    if response.status_code == 200:\n        return response.json()\n    return None\n\ndata = fetch_data("https://api.example.com/data")\nprint(json.dumps(data, indent=2))\n\`\`\`\n\nThis should work better for our needs.`,
-                        timestamp: new Date().toISOString(),
-                        status: "unread",
-                        priority: "high",
-                        type: "code"
-                    },
-                    {
-                        id: 4,
-                        sender: "Sarah Johnson",
-                        email: "sarah.j@business.com",
-                        subject: "C++ Algorithm Implementation",
-                        content: `Check out this optimized sorting algorithm:\n\n\`\`\`cpp\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nvoid quickSort(std::vector<int>& arr, int low, int high) {\n    if (low < high) {\n        int pi = partition(arr, low, high);\n        quickSort(arr, low, pi - 1);\n        quickSort(arr, pi + 1, high);\n    }\n}\n\nint main() {\n    std::vector<int> data = {64, 34, 25, 12, 22, 11, 90};\n    quickSort(data, 0, data.size() - 1);\n    return 0;\n}\n\`\`\`\n\nPerformance looks great!`,
-                        timestamp: new Date(Date.now() - 3600000).toISOString(),
-                        status: "read",
-                        priority: "medium",
-                        type: "code"
-                    },
-                    {
-                        id: 5,
-                        sender: "API Response",
-                        email: "system@api.com",
-                        subject: "JSON Data Response",
-                        content: `API Response received:\n\n\`\`\`json\n{\n  "status": "success",\n  "data": {\n    "users": [\n      {"id": 1, "name": "John Doe"},\n      {"id": 2, "name": "Jane Smith"}\n    ],\n    "total": 2\n  }\n}\n\`\`\`\n\nData processed successfully.`,
-                        timestamp: new Date(Date.now() - 1800000).toISOString(),
-                        status: "unread",
-                        priority: "medium",
-                        type: "code"
-                    },
-                    {
-                        id: 6,
-                        sender: "System Monitor",
-                        email: "monitor@system.com",
-                        subject: "Server Health Check",
-                        content: "System health check completed at " + new Date().toLocaleString() + "\n\n✅ CPU Usage: 45%\n✅ Memory Usage: 67%\n✅ Disk Space: 78%\n✅ Network Latency: 23ms\n\nAll systems operational.",
-                        timestamp: new Date(Date.now() - 900000).toISOString(),
-                        status: "unread",
-                        priority: "low",
-                        type: "text"
-                    },
-                    {
-                        id: 7,
-                        sender: "Database Service",
-                        email: "db@service.com",
-                        subject: "Query Results",
-                        content: `Database query executed:\n\n\`\`\`sql\nSELECT * FROM users WHERE active = 1\nORDER BY created_date DESC\nLIMIT 10;\n\`\`\`\n\nQuery returned 8 records in 0.023 seconds.`,
-                        timestamp: new Date(Date.now() - 600000).toISOString(),
-                        status: "read",
-                        priority: "medium",
-                        type: "code"
-                    },
-                    {
-                        id: 8,
-                        sender: "Log Parser",
-                        email: "logs@parser.com",
-                        subject: "Error Log Analysis",
-                        content: "Recent error analysis:\n\n⚠️ Found 3 warning messages\n❌ Found 1 error message\n📊 Total log entries processed: 1,247\n\nMost recent error:\n'Connection timeout after 30 seconds'\n\nRecommendation: Check network connectivity.",
-                        timestamp: new Date(Date.now() - 300000).toISOString(),
-                        status: "unread",
-                        priority: "high",
-                        type: "text"
-                    }
-                ];
+            const data = await response.json();
+            // Validate response structure
+            if (!Array.isArray(data)) {
+                throw new Error('API response is not an array');
             }
 
-            renderMessages() {
-                console.log('Rendering messages count:', this.messages.length);
-                const container = document.getElementById('messagesList');
-                const countElement = document.getElementById('message-count');
-                
-                if (!container || !countElement) {
-                    console.error('Required DOM elements not found');
-                    return;
-                }
+            // Ensure messages have required fields
+            return data.map(message => ({
+                id: message.id || Math.random().toString(36).substr(2, 9), // Fallback ID
+                sender: message.sender || 'Unknown',
+                email: message.email || 'no-email',
+                subject: message.subject || 'No Subject',
+                content: message.content || '',
+                timestamp: message.timestamp || new Date().toISOString(),
+                status: message.status || 'unread',
+                priority: message.priority || 'medium',
+                type: message.type || 'text'
+            }));
+        } catch (error) {
+            console.error('Error fetching messages from API:', error);
+            throw error; // Let loadMessages handle the error
+        }
+    }
 
-                countElement.textContent = this.messages.length;
+    renderMessages() {
+        console.log('Rendering messages count:', this.messages.length);
+        const container = document.getElementById('messagesList');
+        const countElement = document.getElementById('message-count');
 
-                if (this.messages.length === 0) {
-                    container.innerHTML = '<div class="loading">No messages found</div>';
-                    return;
-                }
+        if (!container || !countElement) {
+            console.error('Required DOM elements not found');
+            this.updateStatus('UI error: Message container not found', 'error');
+            return;
+        }
 
-                // Sort messages by timestamp (newest first)
-                const sortedMessages = [...this.messages].sort((a, b) => 
-                    new Date(b.timestamp) - new Date(a.timestamp)
-                );
+        countElement.textContent = this.messages.length;
 
-                console.log('Sorted messages:', sortedMessages.length);
+        if (this.messages.length === 0) {
+            container.innerHTML = '<div class="loading">No messages found</div>';
+            return;
+        }
 
-                const messagesHtml = sortedMessages.map(message => {
-                    const isSelected = this.selectedMessage?.id === message.id;
-                    return `
-                        <div class="message-item ${isSelected ? 'selected' : ''}" 
-                             onclick="messageSystem.selectMessage(${message.id})">
-                            <div class="message-header">
-                                <div class="message-sender">${this.escapeHtml(message.sender || 'Unknown')}</div>
-                                <div class="status-indicators">
-                                    <div class="status-dot status-${message.status || 'unread'}"></div>
-                                    <div class="status-dot priority-${message.priority || 'medium'}"></div>
-                                </div>
-                            </div>
-                            <div class="message-subject">${this.escapeHtml(message.subject || 'No Subject')}</div>
-                            <div class="message-preview">${this.getPreview(message.content || '')}</div>
-                            <div class="message-time">${this.formatTime(message.timestamp)}</div>
+        // Sort messages by timestamp (newest first)
+        const sortedMessages = [...this.messages].sort((a, b) =>
+            new Date(b.timestamp) - new Date(a.timestamp)
+        );
+
+        console.log('Sorted messages:', sortedMessages.length);
+
+        const messagesHtml = sortedMessages.map(message => {
+            const isSelected = this.selectedMessage?.id === message.id;
+            return `
+                <div class="message-item ${isSelected ? 'selected' : ''}" 
+                     onclick="messageSystem.selectMessage(${message.id})">
+                    <div class="message-header">
+                        <div class="message-sender">${this.escapeHtml(message.sender)}</div>
+                        <div class="status-indicators">
+                            <div class="status-dot status-${message.status}"></div>
+                            <div class="status-dot priority-${message.priority}"></div>
                         </div>
-                    `;
-                }).join('');
+                    </div>
+                    <div class="message-subject">${this.escapeHtml(message.subject)}</div>
+                    <div class="message-preview">${this.getPreview(message.content)}</div>
+                    <div class="message-time">${this.formatTime(message.timestamp)}</div>
+                </div>
+            `;
+        }).join('');
 
-                container.innerHTML = messagesHtml;
-                console.log('Messages rendered successfully');
-            }
+        container.innerHTML = messagesHtml;
+        console.log('Messages rendered successfully');
+    }
 
             selectMessage(messageId) {
                 console.log('Selecting message:', messageId);
@@ -744,12 +700,12 @@
             }
 
             startAutoRefresh() {
-                // Auto-refresh every 30 seconds
-                this.refreshInterval = setInterval(() => {
-                    console.log('Auto-refreshing messages...');
-                    this.loadMessages();
-                }, 30000);
-            }
+        // Auto-refresh every 15 seconds for faster updates (adjust as needed)
+        this.refreshInterval = setInterval(() => {
+            console.log('Auto-refreshing messages...');
+            this.loadMessages();
+        }, 10000);
+    }
 
             stopAutoRefresh() {
                 if (this.refreshInterval) {
