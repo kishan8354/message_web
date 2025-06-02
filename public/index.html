@@ -421,24 +421,16 @@
             }
 
             async loadMessages() {
-                try {
-                    // Simulate API call with demo data including the messages from logs
-                    this.messages = await this.fetchMessagesFromAPI();
-                    this.renderMessages();
-                    this.updateStatus(`Loaded ${this.messages.length} messages`, 'success');
-                } catch (error) {
-                    console.error('Failed to load messages:', error);
-                    this.updateStatus('Connection failed - Using demo data', 'error');
-                    this.messages = this.getDemoMessages();
-                    this.renderMessages();
-                }
+                console.log('Loading messages...');
+this.messages = await this.fetchMessagesFromAPI();
+console.log('Loaded messages from API:', this.messages);
+this.renderMessages();
+this.updateStatus(`Loaded ${this.messages.length} messages`, 'success');
             }
 
             // Simulated API call with the messages from the logs
             async fetchMessagesFromAPI() {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve([
+                return [
                             {
                                 id: 1,
                                 sender: "PythonScript",
@@ -483,39 +475,38 @@
                                 priority: "medium",
                                 type: "code"
                             }
-                        ]);
-                    }, 800); // Simulate network delay
-                });
+                        ];
             }
 
             getDemoMessages() {
-                return [
-                    {
-                        id: 5,
-                        sender: "Development Team",
-                        email: "dev@company.com",
-                        subject: "Meeting Notes",
-                        content: "Here are the key points from today's meeting:\n\n• Project timeline updated\n• New features approved\n• Budget allocation confirmed\n• Next review scheduled for Friday\n\nPlease review and let me know if anything is missing.",
-                        timestamp: new Date(Date.now() - 7200000).toISOString(),
-                        status: "unread",
-                        priority: "medium",
-                        type: "text"
-                    },
-                    {
-                        id: 6,
-                        sender: "System Alert",
-                        email: "alerts@system.com",
-                        subject: "Server Maintenance",
-                        content: "Scheduled server maintenance will occur tonight from 10:00 PM to 2:00 AM.\n\nDuring this time, services may be temporarily unavailable.\n\nWe appreciate your understanding.",
-                        timestamp: new Date(Date.now() - 86400000).toISOString(),
-                        status: "unread",
-                        priority: "high",
-                        type: "text"
-                    }
-                ];
+                return [];
+                    // {
+                    //     id: 5,
+                    //     sender: "Development Team",
+                    //     email: "dev@company.com",
+                    //     subject: "Meeting Notes",
+                    //     content: "Here are the key points from today's meeting:\n\n• Project timeline updated\n• New features approved\n• Budget allocation confirmed\n• Next review scheduled for Friday\n\nPlease review and let me know if anything is missing.",
+                    //     timestamp: new Date(Date.now() - 7200000).toISOString(),
+                    //     status: "unread",
+                    //     priority: "medium",
+                    //     type: "text"
+                    // },
+                    // {
+                    //     id: 6,
+                    //     sender: "System Alert",
+                    //     email: "alerts@system.com",
+                    //     subject: "Server Maintenance",
+                    //     content: "Scheduled server maintenance will occur tonight from 10:00 PM to 2:00 AM.\n\nDuring this time, services may be temporarily unavailable.\n\nWe appreciate your understanding.",
+                    //     timestamp: new Date(Date.now() - 86400000).toISOString(),
+                    //     status: "unread",
+                    //     priority: "high",
+                    //     type: "text"
+                    // }
+                // ];
             }
 
             renderMessages() {
+                console.log('Rendering messages:', this.messages); 
                 const container = document.getElementById('messagesList');
                 const countElement = document.getElementById('message-count');
                 
